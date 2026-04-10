@@ -1,6 +1,8 @@
+import { config } from "dotenv";
 import { Config } from "../config/config.js";
 import userModel from "../models/userModel.js";
 import JWT from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
 function tokenGeneration(user, res) {
 
@@ -15,7 +17,7 @@ function tokenGeneration(user, res) {
 
 }
 
-export const registerController = async (req, res) => {
+export const register = async (req, res) => {
     const { fullname, email, contact, password, role = "isSeller" } = req.body;
 
     const userExist = await userModel.findOne({ $or: [{ fullname }, { email }] });
@@ -27,10 +29,38 @@ export const registerController = async (req, res) => {
 
     const user = await userModel.create({ fullname, email, password, contact, role });
 
-    tokenGeneration(user,res);
+    tokenGeneration(user, res);
 
     res.status(201).json({
         message: "User registered",
+        success: true,
+        user,
+    })
+
+}
+
+export const login = async (req, res) => {
+    const { email, password } = req.body;
+
+    const user = await userModel.findOne({ email }).select('+password');
+
+    if (!user) return res.status(400).json({
+        message: "Invalid credentials",
+        success: false,
+    })
+
+    const VerifyPassword = await bcrypt.compare(password, user.password);
+
+    if (!VerifyPassword) return res.status(400).json({
+        message: "Invalid credentials",
+        success: false,
+    })
+
+
+    tokenGeneration(user, res);
+
+    res.status(201).json({
+        message: "User Logged in",
         success: true,
         user,
     })
