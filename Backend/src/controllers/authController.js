@@ -14,7 +14,6 @@ function tokenGeneration(user, res) {
 
     res.cookie("token", token);
 
-
 }
 
 export const register = async (req, res) => {
@@ -34,7 +33,7 @@ export const register = async (req, res) => {
     res.status(201).json({
         message: "User registered",
         success: true,
-        user,
+        user
     })
 
 }

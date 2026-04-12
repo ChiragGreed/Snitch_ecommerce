@@ -18,9 +18,8 @@ const userSchema = new mongoose.Schema({
         required: [true, "Password is required"],
     },
     contact: {
-        type: Object,
+        type: Number,
         unique: true,
-        required: [true, "Contact number is required"]
     },
     role: {
         type: String,

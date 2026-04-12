@@ -26,6 +26,9 @@ export const registerValidator = [
         .matches(/\d/)
         .withMessage("Password must contain a number"),
 
+    body("contact")
+        .isMobilePhone(),
+
     validationHandler
 
 ]
@@ -40,6 +43,9 @@ export const loginValidator = [
         .withMessage("Password must be at least 6 characters long")
         .matches(/\d/)
         .withMessage("Password must contain a number"),
+
+    body("contact")
+        .isMobilePhone(),
 
     validationHandler
 ]
