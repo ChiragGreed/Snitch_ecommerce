@@ -14,16 +14,23 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        select:false,
-        required: [true, "Password is required"],
+        select: false,
+        required: function () {
+            return !this.googleId
+        },
     },
     contact: {
-        type: Number,
+        type: String,
+        unique: true,
+        required: false
+    },
+    googleId: {
+        type: String,
         unique: true,
     },
     role: {
         type: String,
-        required: [true, "A role is required"],
+        default: "isBuyer",
         enum: ["isSeller", "isBuyer"]
     }
 

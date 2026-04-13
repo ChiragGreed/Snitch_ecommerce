@@ -17,7 +17,7 @@ function tokenGeneration(user, res) {
 }
 
 export const register = async (req, res) => {
-    const { fullname, email, contact, password, role = "isSeller" } = req.body;
+    const { fullname, email, contact, password, role } = req.body;
 
     const userExist = await userModel.findOne({ $or: [{ fullname }, { email }] });
 
@@ -64,4 +64,23 @@ export const login = async (req, res) => {
         user,
     })
 
+}
+
+export const googleAuth = async (req, res) => {
+    const { id, displayName, emails } = req.user;
+    const email = emails[0].value;
+
+    let user = await userModel.findOne({ email });
+
+    if (!user) user = await userModel.create({ fullname: displayName, email, googleId: id });
+
+    tokenGeneration(user, res);
+
+    res.status(201).json({
+        message: "User Authenticated successfully",
+        success: true,
+        user,
+    })
+
+    res.redirect('http://localhost:5173/');
 }

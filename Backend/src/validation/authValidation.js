@@ -44,8 +44,6 @@ export const loginValidator = [
         .matches(/\d/)
         .withMessage("Password must contain a number"),
 
-    body("contact")
-        .isMobilePhone(),
 
     validationHandler
 ]
