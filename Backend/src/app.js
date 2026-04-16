@@ -6,13 +6,14 @@ import GoogleStrategy from 'passport-google-oauth20';
 import { Config } from '../src/config/config.js';
 import cors from 'cors';
 import morgan from 'morgan';
+import ProductRouter from './routes/productRouter.js';
 
 
 const app = express();
 app.use(express.json());
 
 
-app.use(morgan());
+app.use(morgan("dev"));
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -33,6 +34,7 @@ passport.use(new GoogleStrategy({
 
 
 app.use('/api/auth', authRouter);
+app.use('/product', ProductRouter);
 
 
 export default app;

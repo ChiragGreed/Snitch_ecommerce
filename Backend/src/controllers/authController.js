@@ -14,7 +14,7 @@ function tokenGeneration(user, res) {
 
     res.cookie("token", token);
 
-}
+}   
 
 export const register = async (req, res) => {
     const { fullname, email, contact, password, role } = req.body;
@@ -75,12 +75,7 @@ export const googleAuth = async (req, res) => {
     if (!user) user = await userModel.create({ fullname: displayName, email, googleId: id });
 
     tokenGeneration(user, res);
+    
+    res.redirect('http://localhost:5173/login');
 
-    res.status(201).json({
-        message: "User Authenticated successfully",
-        success: true,
-        user,
-    })
-
-    res.redirect('http://localhost:5173/');
 }
