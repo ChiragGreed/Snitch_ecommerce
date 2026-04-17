@@ -9,12 +9,13 @@ function tokenGeneration(user, res) {
     const token = JWT.sign({
         userId: user._id,
         fullname: user.fullname,
+        role: user.role
     }, Config.JWT_SECRET,
         { expiresIn: '7d' });
 
     res.cookie("token", token);
 
-}   
+}
 
 export const register = async (req, res) => {
     const { fullname, email, contact, password, role } = req.body;
@@ -75,7 +76,7 @@ export const googleAuth = async (req, res) => {
     if (!user) user = await userModel.create({ fullname: displayName, email, googleId: id });
 
     tokenGeneration(user, res);
-    
+
     res.redirect('http://localhost:5173/login');
 
 }

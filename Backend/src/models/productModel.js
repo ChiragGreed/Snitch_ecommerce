@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
         required: [true, "Product description is required"]
     },
     images: {
-        type: String,
+        type: [String],
         required: [true, "Product images are required"]
     },
     sellerId:{

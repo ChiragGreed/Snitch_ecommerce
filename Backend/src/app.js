@@ -34,7 +34,7 @@ passport.use(new GoogleStrategy({
 
 
 app.use('/api/auth', authRouter);
-app.use('/product', ProductRouter);
+app.use('/api/product', ProductRouter);
 
 
 export default app;

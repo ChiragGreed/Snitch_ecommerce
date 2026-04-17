@@ -1,9 +1,20 @@
 import express from 'express';
-import { createProduct } from '../controllers/productController.js';
+import { createProduct, getSellerProducts } from '../controllers/productController.js';
+import { authSeller } from '../middlewares/authMiddleware.js';
+import multer from 'multer';
 
 const ProductRouter = express.Router();
 
-ProductRouter.get('/create',createProduct);
+const storage = multer.memoryStorage();
+const upload = multer({
+    limits: {
+        fileSize: 5 * 1024 * 1024
+    }, storage: storage
+});
+
+
+ProductRouter.post('/create', authSeller, upload.array('images', 8), createProduct);
+ProductRouter.get('/seller', authSeller, getSellerProducts);
 
 
 

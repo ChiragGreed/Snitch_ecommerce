@@ -1,16 +1,20 @@
 import ImageKit from '@imagekit/nodejs';
-import { Config } from '../config/config';
+import { toFile } from '@imagekit/nodejs';
+import { Config } from '../config/config.js';
 
-const ImagetKitUpload = async (buffer) => {
+const ImagetKitUpload = async (buffer, fileName) => {
 
-    const client = new ImageKit.client({
+    const client = new ImageKit({
         privateKey: Config.IMAGEKIT_PRIVATE_KEY
     })
 
     const response = await client.files.upload({
-        file: await toFiles(Buffer.from(buffer), 'file'),
-        filename: '/Snitch/ProductImages'
+        file: await toFile(Buffer.from(buffer), 'file'),
+        fileName: fileName,
+        folder: '/Snitch/Products/',
     })
 
-    return response
+    return response.url;
 }
+
+export default ImagetKitUpload;
