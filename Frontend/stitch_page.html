@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#f8f9fa",
+                        "tertiary-fixed-dim": "#d5cdee",
+                        "inverse-surface": "#0c0f10",
+                        "on-secondary-fixed": "#3e3f45",
+                        "primary": "#525e7f",
+                        "surface": "#f8f9fa",
+                        "on-primary-fixed": "#333f5e",
+                        "on-background": "#2b3437",
+                        "secondary-fixed": "#e2e2e9",
+                        "surface-variant": "#dbe4e7",
+                        "on-surface": "#2b3437",
+                        "on-primary": "#f8f7ff",
+                        "on-secondary-fixed-variant": "#5a5b61",
+                        "surface-container-highest": "#dbe4e7",
+                        "surface-container-low": "#f1f4f6",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#525e7f",
+                        "surface-container": "#eaeff1",
+                        "secondary": "#5e5f65",
+                        "secondary-container": "#e2e2e9",
+                        "secondary-fixed-dim": "#d4d4db",
+                        "tertiary-container": "#e3dbfd",
+                        "tertiary": "#615b77",
+                        "on-tertiary": "#fcf7ff",
+                        "background": "#f8f9fa",
+                        "on-tertiary-fixed": "#3f3a54",
+                        "secondary-dim": "#525359",
+                        "on-secondary": "#f9f8ff",
+                        "on-surface-variant": "#586064",
+                        "tertiary-dim": "#54506b",
+                        "primary-dim": "#465272",
+                        "error-dim": "#4e0309",
+                        "primary-fixed": "#dae2ff",
+                        "on-error-container": "#752121",
+                        "outline": "#737c7f",
+                        "tertiary-fixed": "#e3dbfd",
+                        "on-primary-fixed-variant": "#4f5b7c",
+                        "on-tertiary-fixed-variant": "#5b5672",
+                        "on-secondary-container": "#505157",
+                        "error": "#9f403d",
+                        "surface-dim": "#d1dce0",
+                        "on-primary-container": "#455171",
+                        "primary-container": "#dae2ff",
+                        "primary-fixed-dim": "#c8d4fa",
+                        "error-container": "#fe8983",
+                        "on-error": "#fff7f6",
+                        "on-tertiary-container": "#514d68",
+                        "surface-container-high": "#e3e9ec",
+                        "inverse-primary": "#cad6fd",
+                        "outline-variant": "#abb3b7",
+                        "inverse-on-surface": "#9b9d9e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Manrope"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body text-on-surface min-h-screen">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-[#f8f9fa] dark:bg-[#1a1c1e] flex justify-between items-center px-8 py-4 w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#525e7f] cursor-pointer" data-icon="menu">menu</span>
+<span class="text-xl font-bold text-[#2e3a59] dark:text-[#f8f9fa] tracking-widest uppercase font-headline">The Curated Atelier</span>
+</div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="font-headline font-semibold tracking-tight text-[#586064] hover:bg-[#f1f4f6] px-3 py-1 rounded transition-colors" href="#">Inventory</a>
+<a class="font-headline font-semibold tracking-tight text-[#525e7f] border-b-2 border-[#525e7f] px-3 py-1" href="#">Listings</a>
+<a class="font-headline font-semibold tracking-tight text-[#586064] hover:bg-[#f1f4f6] px-3 py-1 rounded transition-colors" href="#">Sales</a>
+<div class="h-10 w-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant/15">
+<img alt="Seller Profile" data-alt="close up professional portrait of a gallery curator with a neutral background and soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxCbiTTTLgwKoijGAhnv7kgcVnB99Og1BNdpDpVwd1hCHD2oQRrbqkpIQ2zZk0bTHhHVKJuH8q1XZnDYh9SChAEsq5Uu_Jz66xeCP8BmqQVIosHFIdXY99jGdHWtZqwEG2FajFtypVFiReWtbPC56pPbapuwcLLjEjc4dkGAArtYUZvZqYvP1cy_U4UWofdY6W_5I_g9jXeFTLzU_SUBaqKOLZzFHp6LEW1SST3gKyBxNS6cgqP7dpad2MZhiZCrL_46krb8yw2Z4"/>
+</div>
+</nav>
+</header>
+<main class="max-w-5xl mx-auto px-6 py-12 mb-24">
+<!-- Editorial Header -->
+<div class="mb-12">
+<h1 class="font-headline text-[3.5rem] font-extrabold leading-tight text-on-surface tracking-tight">New Curation</h1>
+<p class="font-label text-on-surface-variant text-lg mt-2 max-w-2xl">Transform your product into an experience. Provide high-fidelity details to captivate your discerning audience.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Main Form Column -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Primary Product Card -->
+<section class="bg-surface-container-lowest rounded-xl p-8 lg:p-12 shadow-[0_8px_24px_rgba(82,94,127,0.04)]">
+<div class="space-y-10">
+<!-- Title Field -->
+<div class="space-y-3">
+<label class="font-label text-sm font-semibold text-on-surface-variant uppercase tracking-widest">Product Title</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/15 rounded-xl px-6 py-4 text-xl font-headline focus:ring-4 focus:ring-primary-fixed-dim/30 focus:border-primary transition-all outline-none text-on-surface placeholder:text-outline-variant/50" placeholder="e.g., Hand-Knotted Silk Tapestry" type="text"/>
+</div>
+<!-- Description Field -->
+<div class="space-y-3">
+<label class="font-label text-sm font-semibold text-on-surface-variant uppercase tracking-widest">Description</label>
+<textarea class="w-full bg-surface-container-lowest border border-outline-variant/15 rounded-xl px-6 py-4 text-base font-body focus:ring-4 focus:ring-primary-fixed-dim/30 focus:border-primary transition-all outline-none text-on-surface placeholder:text-outline-variant/50 resize-none" placeholder="Describe the craftsmanship, heritage, and unique textures of this piece..." rows="6"></textarea>
+</div>
+<!-- Media Upload -->
+<div class="space-y-3">
+<label class="font-label text-sm font-semibold text-on-surface-variant uppercase tracking-widest">Product Images</label>
+<div class="relative group cursor-pointer">
+<div class="w-full h-64 border-2 border-dashed border-outline-variant/30 rounded-xl bg-surface-container-low flex flex-col items-center justify-center gap-4 group-hover:bg-surface-container transition-colors">
+<div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="cloud_upload">cloud_upload</span>
+</div>
+<div class="text-center">
+<p class="font-headline font-bold text-on-surface">Drop your files here or click to browse</p>
+<p class="font-label text-sm text-on-surface-variant mt-1">High-resolution JPEG or PNG up to 20MB</p>
+</div>
+</div>
+<input class="absolute inset-0 opacity-0 cursor-pointer" type="file"/>
+</div>
+</div>
+<!-- Pricing Section -->
+<div class="pt-6">
+<h3 class="font-headline text-2xl font-bold mb-6">Pricing</h3>
+<div class="flex flex-col sm:flex-row gap-4">
+<div class="flex-grow space-y-3">
+<label class="font-label text-sm font-semibold text-on-surface-variant uppercase tracking-widest">Amount</label>
+<div class="relative">
+<span class="absolute left-6 top-1/2 -translate-y-1/2 text-on-surface-variant font-headline font-bold">$</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/15 rounded-xl pl-12 pr-6 py-4 text-xl font-headline focus:ring-4 focus:ring-primary-fixed-dim/30 focus:border-primary transition-all outline-none text-on-surface" placeholder="0.00" type="number"/>
+</div>
+</div>
+<div class="sm:w-1/3 space-y-3">
+<label class="font-label text-sm font-semibold text-on-surface-variant uppercase tracking-widest">Currency</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border border-outline-variant/15 rounded-xl px-6 py-4 text-base font-headline focus:ring-4 focus:ring-primary-fixed-dim/30 focus:border-primary transition-all outline-none text-on-surface appearance-none cursor-pointer">
+<option>USD - Dollars</option>
+<option>EUR - Euros</option>
+<option>GBP - Pounds</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- CTA -->
+<div class="mt-16">
+<button class="w-full bg-primary hover:bg-primary-dim text-on-primary font-headline font-bold text-lg py-5 rounded-xl shadow-[0_8px_24px_rgba(82,94,127,0.15)] transition-all active:scale-[0.98]">
+                            Publish Product
+                        </button>
+</div>
+</section>
+</div>
+<!-- Sidebar Info/Preview Column -->
+<div class="lg:col-span-4 space-y-8">
+<!-- Preview Card -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_8px_24px_rgba(82,94,127,0.04)]">
+<div class="aspect-square bg-surface-container-low relative flex items-center justify-center">
+<img alt="Product Preview" class="object-cover w-full h-full opacity-40" data-alt="clean minimal product photography mockup with soft shadows and a neutral grey background studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm_xvYPyz0-STFaDDvtHqgAorpVa-_yceNGIcdRtIX2AO225920RITHeBHGYA1xKUmA9vn7RpU7zAI02-Niplws6tXh1sKkoP8ohc0q8drPNq7xV9K04b6PhUSXancYtnxa8DD6mt0SbnZVwPOSDnagb-EMQ11MTDmaidYnT2RBMrQq5oPU3Dfs0be5CXFIg9UK3RDJYNl1mb05e0L2w2kSXKYohcnJMA-uP_V8Yanw7WpS3J-R4pwC8lhn68PhNAnHGZVN_e7ic0"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="bg-surface-bright/80 backdrop-blur px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest text-on-surface">Live Preview</span>
+</div>
+</div>
+<div class="p-6 space-y-2">
+<div class="h-4 w-2/3 bg-surface-container rounded-full"></div>
+<div class="h-8 w-1/2 bg-surface-container-high rounded-full"></div>
+<div class="pt-4 flex justify-between items-center">
+<div class="h-6 w-20 bg-primary/10 rounded-full"></div>
+<div class="h-4 w-4 rounded-full bg-outline-variant/30"></div>
+</div>
+</div>
+</div>
+<!-- Tips Card -->
+<div class="bg-primary text-on-primary rounded-xl p-8 space-y-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<h4 class="font-headline font-bold">Curator's Tip</h4>
+</div>
+<p class="text-on-primary/80 text-sm leading-relaxed">
+                        Listings with high-contrast, professional photography and a minimum of 300 words in description see a <span class="text-white font-bold">45% higher engagement</span> rate in the gallery.
+                    </p>
+<div class="pt-2">
+<a class="text-sm font-bold border-b border-on-primary/30 pb-1 hover:border-on-primary transition-all" href="#">View Editorial Guidelines</a>
+</div>
+</div>
+<!-- Status Card -->
+<div class="bg-surface-container-low rounded-xl p-8 space-y-4">
+<div class="flex justify-between items-center">
+<span class="font-label text-xs font-bold uppercase tracking-widest text-on-surface-variant">Account Status</span>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="font-label text-xs font-bold text-on-surface">Verified Seller</span>
+</div>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-4/5 rounded-full"></div>
+</div>
+<p class="text-xs text-on-surface-variant">Profile 80% complete. Add your banking details to enable instant payouts.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-[#ffffff]/80 backdrop-blur-md flex justify-around items-center px-4 py-3 pb-safe shadow-[0_-4px_12px_rgba(82,94,127,0.04)]">
+<a class="flex flex-col items-center justify-center text-[#586064] dark:text-[#abb3b7]" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Manrope'] text-[10px] font-medium uppercase tracking-widest mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#dae2ff] dark:bg-[#465272] text-[#525e7f] dark:text-[#ffffff] rounded-xl px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+<span class="font-['Manrope'] text-[10px] font-medium uppercase tracking-widest mt-1">Listings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#586064] dark:text-[#abb3b7]" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-['Manrope'] text-[10px] font-medium uppercase tracking-widest mt-1">Sales</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#586064] dark:text-[#abb3b7]" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Manrope'] text-[10px] font-medium uppercase tracking-widest mt-1">Account</span>
+</a>
+</nav>
+</body></html>

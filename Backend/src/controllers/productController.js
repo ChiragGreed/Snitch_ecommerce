@@ -3,6 +3,7 @@ import ImagetKitUpload from "../services/imagekit.js";
 
 export const createProduct = async (req, res) => {
     const { title, description } = req.body;
+    console.log("req:", req.files);
 
     const imagesUrl = await Promise.all(req.files.map((image) => { return ImagetKitUpload(image.buffer, image.originalname) }));
 

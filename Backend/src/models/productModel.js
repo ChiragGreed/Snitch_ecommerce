@@ -13,14 +13,26 @@ const productSchema = new mongoose.Schema({
         type: [String],
         required: [true, "Product images are required"]
     },
-    sellerId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"users",
-        required:[true,"Product sellerId is required"]
+    price: {
+        type: {
+            amount: {
+                type: Number,
+                required: [true, "Product price amount is required"]
+            }, currency: {
+                type: String,
+                default: 'INR',
+                enum: ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "SEK", "NZD"],
+            }
+        },
+    },
+    sellerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users",
+        required: [true, "Product sellerId is required"]
     }
 
 })
 
-const productModel = mongoose.model("products",productSchema);
+const productModel = mongoose.model("products", productSchema);
 
 export default productModel
