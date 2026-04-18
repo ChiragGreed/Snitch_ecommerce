@@ -67,6 +67,31 @@ export const login = async (req, res) => {
 
 }
 
+export const getMe = async (req, res) => {
+
+    const user = await userModel.findById(req.user);
+
+    if (!user) return res.status(404).json({
+        message: "User not found",
+        success: false,
+        error: "No user forund with this token"
+    });
+
+    res.status(200).json({
+        message: "Fetched user details",
+        success: true,
+        user
+    })
+
+}
+
+export const protectedRoute = async (req, res) => {
+    res.status(200).json({
+        message: "Protected route accessed",
+        success: true,
+    })
+}
+
 export const googleAuth = async (req, res) => {
     const { id, displayName, emails } = req.user;
     const email = emails[0].value;
@@ -77,6 +102,6 @@ export const googleAuth = async (req, res) => {
 
     tokenGeneration(user, res);
 
-    res.redirect('http://localhost:5173/login');
+    res.redirect('http://localhost:5173/');
 
 }

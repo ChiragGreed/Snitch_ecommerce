@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import useAuth from '../../Hook/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const { loginHandler } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
@@ -20,6 +23,8 @@ const Login = () => {
     e.preventDefault();
     console.log('Form Submitted:', formData);
     loginHandler(formData);
+    navigate('/');
+    
   };
 
   return (

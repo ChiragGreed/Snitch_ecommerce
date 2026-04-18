@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import useAuth from '../../Hook/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const { registerHandler } = useAuth();
   const [formData, setFormData] = useState({
     fullname: '',
@@ -22,6 +25,7 @@ const Register = () => {
     e.preventDefault();
     console.log('Form Submitted:', formData);
     registerHandler(formData);
+    navigate('/');
   };
 
   return (

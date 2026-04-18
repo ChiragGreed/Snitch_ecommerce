@@ -3,8 +3,11 @@ import Register from './Features/Authentication/Pages/Register/Register'
 import App from './App'
 import Login from './Features/Authentication/Pages/Register/Login'
 import CreateProduct from './Features/Products/Pages/CreateProduct'
+import { useSelector } from 'react-redux'
+import { useEffect, useState } from 'react'
 
 const AppRoutes = () => {
+
 
     return (
         <BrowserRouter>
