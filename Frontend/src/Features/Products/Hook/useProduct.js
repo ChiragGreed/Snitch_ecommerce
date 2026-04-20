@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
-import { createProductApi } from "../Service/productApi"
-import {setProducts} from "../State/productSlice.js"
+import { createProductApi, getSellerProductsApi } from "../Service/productApi"
+import { setProducts } from "../State/productSlice.js"
 
 const useProduct = () => {
 
@@ -20,7 +20,13 @@ const useProduct = () => {
         dispatch(setProducts(productData));
     }
 
-    return { createProductHandler }
+    const SellerProductsHandler = async () => {
+
+        const sellerProductsData = await getSellerProductsApi();
+        dispatch(setSellerProducts(sellerProductsData));
+    }
+
+    return { createProductHandler, SellerProductsHandler }
 }
 
 export default useProduct;
