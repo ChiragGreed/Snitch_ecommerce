@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import useAuth from "./Features/Authentication/Hook/useAuth"
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Dashboard from "./Features/Products/Pages/Dashboard";
 
 
 const App = () => {
@@ -36,9 +37,8 @@ const App = () => {
 
 
   return (
-    <div >
-      <h1>Welcome to Snitch</h1>
-      <h2>{User?.fullname}</h2>
+    <div>
+      <Dashboard />
     </div>
   )
 }
