@@ -3,11 +3,16 @@ import ImagetKitUpload from "../services/imagekit.js";
 
 export const createProduct = async (req, res) => {
     const { title, description } = req.body;
-    console.log("req:", req.files);
+    let price = req.body.price;
+
+    if (typeof price == 'string') {
+        price = JSON.parse(price);
+    }
+    console.log("Price:", price);
 
     const imagesUrl = await Promise.all(req.files.map((image) => { return ImagetKitUpload(image.buffer, image.originalname) }));
 
-    const product = await productModel.create({ title, description, images: imagesUrl, sellerId: req.user });
+    const product = await productModel.create({ title, description, images: imagesUrl, price, sellerId: req.user });
 
     res.status(201).json({
         message: "Product created",

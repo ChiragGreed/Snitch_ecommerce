@@ -38,7 +38,6 @@ const useAuth = () => {
             const userData = await getMeApi();
             dispatch(setLoading(true));
             dispatch(setUser(userData.user));
-            console.log("FINALLY RUNNING");
         } catch (error) {
             return error;
         }

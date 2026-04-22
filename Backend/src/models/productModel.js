@@ -24,6 +24,7 @@ const productSchema = new mongoose.Schema({
                 enum: ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "SEK", "NZD"],
             }
         },
+        required: true
     },
     sellerId: {
         type: mongoose.Schema.Types.ObjectId,

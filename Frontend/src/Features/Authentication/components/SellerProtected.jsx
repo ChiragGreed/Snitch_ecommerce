@@ -25,9 +25,6 @@ const SellerProtected = ({ children }) => {
             navigate("/");
             return;
         }
-
-        console.log("User: " + User);
-        console.log("Loading: " + Loading);
     }, [User, Loading]);
 
     return (
