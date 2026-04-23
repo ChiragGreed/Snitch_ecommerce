@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SellerProductCard = ({ product }) => {
     const [currentImage, setCurrentImage] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
+    const navigate = useNavigate();
 
     const images = product?.images || [];
     const hasMultipleImages = images.length > 1;
@@ -22,6 +24,9 @@ const SellerProductCard = ({ product }) => {
             className="group relative bg-white rounded-sm overflow-hidden border border-[#e8e2db]
                  transition-all duration-500 hover:shadow-[0_12px_40px_rgba(26,22,18,0.08)]
                  hover:border-[#d4cdc6]"
+            onClick={() => {
+                navigate(`${product?._id}`)
+            }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
@@ -118,11 +123,26 @@ const SellerProductCard = ({ product }) => {
                 <div className="w-8 h-px bg-[#e0d9d2] mt-4 mb-3 group-hover:w-12 group-hover:bg-[#c4a078]
                         transition-all duration-500" />
 
-                {/* Product Price */}
-                <div className="mt-1 flex items-baseline gap-1.5">
+                {/* Product Price & Actions */}
+                <div className="mt-1 flex items-center justify-between gap-1.5">
                     <span className="font-cormorant text-[20px] font-medium text-[#1a1612]">
                         {product?.price?.currency === 'INR' ? '₹' : product?.price?.currency || ''}{product?.price?.amount?.toLocaleString() || '0'}
                     </span>
+                    
+                    <button 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`${product?._id}`);
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1612] text-white rounded-sm
+                                   text-[10px] font-medium uppercase tracking-[0.1em] cursor-pointer
+                                   transition-all duration-200 hover:bg-[#2e2620] active:scale-[0.95]"
+                    >
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                        Edit
+                    </button>
                 </div>
             </div>
         </div>

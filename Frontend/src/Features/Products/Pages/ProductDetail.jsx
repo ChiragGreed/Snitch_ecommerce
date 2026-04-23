@@ -7,6 +7,7 @@ const ProductDetail = () => {
     const { ProductHandler } = useProduct();
     const productData = useSelector((state) => state.products.Product);
     const { productId } = useParams();
+    
     const navigate = useNavigate();
     const [mainImage, setMainImage] = useState("");
 

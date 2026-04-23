@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { createProductApi, getProductApi, getProductsApi, getSellerProductsApi } from "../Service/productApi"
+import { createProductApi, getProductApi, getProductsApi, getSellerProductsApi, updateProductApi } from "../Service/productApi"
 import { setAllProducts, setProduct } from "../State/productSlice.js"
 import { setSellerProducts } from "../State/productSlice.js"
 
@@ -39,7 +39,29 @@ const useProduct = () => {
         dispatch(setProduct(ProductData.product));
     }
 
-    return { createProductHandler, SellerProductsHandler, ProductsHandler, ProductHandler }
+    const updateProductHandler = async (productId, title, description, price, images) => {
+        const formData = new FormData();
+
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('price', JSON.stringify(price));
+
+        images.forEach(image => {
+            if (image instanceof File) {
+                formData.append('images', image);
+            } else {
+                formData.append('existingImages', image);
+            }
+        });
+
+        const data = await updateProductApi(productId, formData);
+        if (data.product) {
+            dispatch(setProduct(data.product));
+        }
+        return true;
+    }
+
+    return { createProductHandler, SellerProductsHandler, ProductsHandler, ProductHandler, updateProductHandler }
 }
 
 export default useProduct;

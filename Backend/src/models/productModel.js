@@ -26,6 +26,42 @@ const productSchema = new mongoose.Schema({
         },
         required: true
     },
+
+    variants: [
+        {
+            attribute: {
+                type: Map,
+                of: String
+            },
+            images: [
+                {
+                    url: {
+                        type: String,
+                        required: [true, "Prodcut variant image Url is required"]
+                    }
+                }
+            ],
+            price: {
+                amount: {
+                    type: Number,
+                    required: [true, "Product variant price amount is required"]
+                },
+                currency: {
+                    type: String,
+                    default: 'INR',
+                    enum: ["USD", "INR", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF", "CNY", "SEK", "NZD"],
+                    required: [true, "Prodcut variant currency is required"]
+                }
+
+            },
+            stock: {
+                type: Number,
+                default: 0,
+                required: [true, "Product Variant stock quantity is required"]
+            }
+        },
+    ],
+
     sellerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",

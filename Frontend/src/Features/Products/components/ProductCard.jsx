@@ -26,7 +26,6 @@ const ProductCard = ({ product }) => {
                  transition-all duration-500 hover:shadow-[0_12px_40px_rgba(26,22,18,0.08)]
                  hover:border-[#d4cdc6]"
       onClick={() => {
-        console.log("Clicked");
         navigate(`product/${product?._id}`)
       }}
       onMouseEnter={() => setIsHovered(true)}

@@ -8,7 +8,6 @@ export const createProduct = async (req, res) => {
     if (typeof price == 'string') {
         price = JSON.parse(price);
     }
-    console.log("Price:", price);
 
     const imagesUrl = await Promise.all(req.files.map((image) => { return ImagetKitUpload(image.buffer, image.originalname) }));
 
@@ -53,7 +52,6 @@ export const getProducts = async (req, res) => {
     })
 }
 
-
 export const getProduct = async (req, res) => {
     const { productId } = req.params;
     const product = await productModel.findOne({ _id: productId });
@@ -69,4 +67,38 @@ export const getProduct = async (req, res) => {
         success: true,
         product
     })
+}
+
+export const updateProduct = async (req, res) => {
+    const { title, description } = req.body;
+    let price = req.body.price;
+
+    if (typeof price == 'string') {
+        price = JSON.parse(price);
+    }
+
+
+    const imagesUrl = await Promise.all(req.files.map((image) => { return ImagetKitUpload(image.buffer, image.originalname) }));
+
+    const { productId } = req.params;
+
+    let updatedProduct;
+
+    try {
+        updatedProduct = await productModel.findByIdAndUpdate(productId, { title, description, images, images: imagesUrl, price });
+    }
+    catch (err) {
+        return res.status(400).json({
+            message: "Product updation failed",
+            success: false,
+            err
+        })
+    }
+
+    res.status(200).json({
+        message: "Product Updated",
+        success: true,
+        updatedProduct
+    })
+
 }

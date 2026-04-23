@@ -24,3 +24,10 @@ export const getProductApi = async ({ productId }) => {
   const response = await api.get(`/${productId}`);
   return response.data;
 }
+
+export const updateProductApi = async (productId, formData) => {
+  console.log([...formData]);
+
+  const response = await api.patch(`/seller/${productId}`, { formData });
+  return response.data;
+}

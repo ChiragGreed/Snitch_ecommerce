@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import SellerProducts from './Features/Products/Pages/SellerProducts'
 import ProductDetail from './Features/Products/Pages/ProductDetail'
+import SellerProductDetail from './Features/Products/Pages/SellerProductDetail'
 
 const AppRoutes = () => {
 
@@ -21,6 +22,7 @@ const AppRoutes = () => {
                 <Route path='/product' >
                     <Route path='/product/createProduct' element={<CreateProduct />} />
                     <Route path='/product/sellerProducts' element={<SellerProducts />} />
+                    <Route path='/product/sellerProducts/:productId' element={<SellerProductDetail />} />
                     <Route path='/product/:productId' element={<ProductDetail />} />
                 </Route>
 
