@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
   const [currentImage, setCurrentImage] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+
+  const navigate = useNavigate();
 
   const images = product?.images || [];
   const hasMultipleImages = images.length > 1;
@@ -22,6 +25,10 @@ const ProductCard = ({ product }) => {
       className="group relative bg-white rounded-sm overflow-hidden border border-[#e8e2db]
                  transition-all duration-500 hover:shadow-[0_12px_40px_rgba(26,22,18,0.08)]
                  hover:border-[#d4cdc6]"
+      onClick={() => {
+        console.log("Clicked");
+        navigate(`product/${product?._id}`)
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

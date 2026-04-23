@@ -4,7 +4,7 @@ import useProduct from "../Hook/useProduct";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import SellerProtected from "../../Authentication/components/sellerProtected";
-import ProductCard from "../components/ProductCard";
+import SellerProductCard from "../components/SellerProductCard";
 
 const SellerProductsPage = () => {
     const { SellerProductsHandler } = useProduct();
@@ -104,7 +104,7 @@ const SellerProductsPage = () => {
                     {sellerProducts.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {sellerProducts.map((product, idx) => (
-                                <ProductCard key={idx} product={product} />
+                                <SellerProductCard key={idx} product={product} />
 
                             ))}
                         </div>

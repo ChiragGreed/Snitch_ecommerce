@@ -1,5 +1,5 @@
 import express from 'express';
-import { createProduct, getProducts, getSellerProducts } from '../controllers/productController.js';
+import { createProduct, getProduct, getProducts, getSellerProducts } from '../controllers/productController.js';
 import { authSeller } from '../middlewares/authMiddleware.js';
 import multer from 'multer';
 
@@ -15,6 +15,7 @@ const upload = multer({
 
 ProductRouter.post('/create', authSeller, upload.array('images', 8), createProduct);
 ProductRouter.get('/seller', authSeller, getSellerProducts);
+ProductRouter.get('/:productId', getProduct);
 ProductRouter.get('/', getProducts);
 
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import useProduct from '../Hook/useProduct';
 import ProductCard from '../components/ProductCard';
+import { useNavigate } from 'react-router-dom';
 
 const SORT_OPTIONS = [
     { label: 'Newest', value: 'newest' },
@@ -67,7 +68,7 @@ const Dashboard = () => {
 
             {/* ── HEADER ── */}
             <header className="sticky top-0 z-30 bg-[#f7f4f0]/80 backdrop-blur-xl border-b border-[#e8e2db]">
-                <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
+                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                     <span className="font-cormorant text-[13px] font-semibold tracking-[0.3em] text-[#1a1612] uppercase">
                         Snitch
                     </span>
@@ -101,29 +102,46 @@ const Dashboard = () => {
                 </div>
             </header>
 
-            <main className="max-w-7xl mx-auto px-6 lg:px-10 py-12 lg:py-16">
+            <main className="max-w-7xl mx-auto px-6 pt-110 py-12 lg:pt-130 lg:py-16">
 
-                {/* ── PAGE TITLE ── */}
-                <div className="mb-10 lg:mb-12">
-                    <div className="flex items-center gap-3 mb-4">
-                        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm
-                                         text-[9px] font-medium uppercase tracking-[0.16em] text-[#8a6e52]
-                                         border border-[rgba(138,110,82,0.25)] bg-[rgba(138,110,82,0.06)]">
-                            <span className="w-[5px] h-[5px] rounded-full bg-[#8a6e52]" />
-                            All Products
+                {/* ── HERO BANNER ── */}
+                <div className="absolute left-5 right-5 top-16 lg:left-0 lg:right-0 h-[400px] lg:h-[500px] mb-16 overflow-hidden group">
+                    <img
+                        src="/snitch_hero.png"
+                        alt="New Collection"
+                        className="w-full h-full object-cover transition-transform duration-[2s] scale-105 group-hover:scale-100"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#1a1612]/60 via-[#1a1612]/20 to-transparent flex flex-col justify-center px-12 lg:px-20">
+                        <span className="font-dm text-[11px] uppercase tracking-[0.3em] text-[#f0ebe4] mb-4 animate-fade-in">
+                            Limited Edition
                         </span>
+                        <h2 className="font-cormorant text-[clamp(40px,6vw,72px)] font-light text-white leading-[1] mb-8 max-w-xl">
+                            Refined <em className="not-italic italic">Minimalism</em> <br />
+                            for the Modern Era
+                        </h2>
+                        <button className="w-fit px-8 py-4 bg-[#f0ebe4] text-[#1a1612] font-dm text-[12px] font-medium uppercase tracking-[0.2em] 
+                                         rounded-sm hover:bg-white transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95 shadow-lg">
+                            Shop the Collection
+                        </button>
                     </div>
-                    <h1 className="font-cormorant text-[clamp(34px,4.5vw,52px)] font-light text-[#1a1612] leading-[1.1] tracking-[-0.01em] mb-3">
-                        Discover the{' '}
-                        <em className="not-italic italic font-light text-[#8a6e52]">Collection</em>
-                    </h1>
-                    <p className="font-dm text-[13.5px] font-light text-[#9a9089] leading-relaxed max-w-md">
-                        Browse every piece — curated, styled, and ready to shop.
-                    </p>
-                    <div className="w-12 h-px bg-[rgba(138,110,82,0.3)] mt-8" />
                 </div>
 
 
+
+                {/* ── CATEGORY BAR ── */}
+                <div className="flex items-center gap-4 mb-8 overflow-x-auto pb-4 no-scrollbar">
+                    {['All Pieces', 'New Arrivals', 'Essentials', 'Outerwear', 'Suits & Tailoring', 'Accessories'].map((cat, i) => (
+                        <button
+                            key={cat}
+                            className={`whitespace-nowrap px-6 py-2.5 rounded-full font-dm text-[11px] uppercase tracking-[0.12em] transition-all duration-300
+                                       ${i === 0
+                                    ? 'bg-[#1a1612] text-white shadow-md'
+                                    : 'bg-white border border-[#e8e2db] text-[#9a9089] hover:border-[#8a6e52] hover:text-[#1a1612]'}`}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
 
                 {/* ── FILTER & SORT BAR ── */}
                 <div className="flex flex-wrap items-center justify-between gap-4 mb-10">
@@ -217,7 +235,7 @@ const Dashboard = () => {
                 {filtered.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {filtered.map((product, idx) => (
-                            <ProductCard key={product?._id || idx} product={product} />
+                            <ProductCard  key={idx} product={product} />
                         ))}
                     </div>
                 ) : (
