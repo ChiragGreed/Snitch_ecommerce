@@ -70,28 +70,58 @@ export const getProduct = async (req, res) => {
 }
 
 export const updateProduct = async (req, res) => {
-    const { title, description } = req.body;
-    let price = req.body.price;
+    const { productId } = req.params;
+
+    let { title, description, price, existingImages } = req.body;
 
     if (typeof price == 'string') {
         price = JSON.parse(price);
     }
 
+    if (existingImages) {
+        existingImages = JSON.parse(existingImages);
+    }
 
-    const imagesUrl = await Promise.all(req.files.map((image) => { return ImagetKitUpload(image.buffer, image.originalname) }));
+    const imagesUrl = req.files?.length ? await Promise.all(req.files.map((image) => { return ImagetKitUpload(image.buffer, image.originalname) })) : [];
 
-    const { productId } = req.params;
+    const product = await productModel.findById(productId);
+
+
+    if (!product) return res.status(404).json({
+        message: "Product not found",
+        success: false,
+        error: "No product found by the this product Id"
+    })
+
+
+    const updateFields = {};
+
+    if (title !== undefined) {
+        updateFields.title = title;
+    }
+
+    if (description !== undefined) {
+        updateFields.description = description;
+    }
+
+    if (price !== undefined) {
+        updateFields.price = price;
+    }
+
+    updateFields.images = [...existingImages, ...imagesUrl];
+
 
     let updatedProduct;
 
     try {
-        updatedProduct = await productModel.findByIdAndUpdate(productId, { title, description, images, images: imagesUrl, price });
+        updatedProduct = await productModel.findByIdAndUpdate(productId, updateFields);
     }
     catch (err) {
+        console.log(err);
         return res.status(400).json({
             message: "Product updation failed",
             success: false,
-            err
+            err: err
         })
     }
 

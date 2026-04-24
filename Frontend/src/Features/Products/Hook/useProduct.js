@@ -42,17 +42,20 @@ const useProduct = () => {
     const updateProductHandler = async (productId, title, description, price, images) => {
         const formData = new FormData();
 
-        formData.append('title', title);
-        formData.append('description', description);
-        formData.append('price', JSON.stringify(price));
+        if (title !== null) formData.append('title', title);
+        if (description !== null) formData.append('description', description);
+        if (price !== null) formData.append('price', JSON.stringify(price));
 
-        images.forEach(image => {
-            if (image instanceof File) {
-                formData.append('images', image);
-            } else {
-                formData.append('existingImages', image);
-            }
-        });
+        if (images !== null) {
+
+            const existingImages = [...(images.filter(img => !(img instanceof File)))];
+
+            formData.append("existingImages", JSON.stringify(existingImages));
+
+            images.forEach(image => {
+                if (image instanceof File) formData.append('images', image);
+            })
+        }
 
         const data = await updateProductApi(productId, formData);
         if (data.product) {

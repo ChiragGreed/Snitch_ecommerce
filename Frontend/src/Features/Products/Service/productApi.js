@@ -26,8 +26,8 @@ export const getProductApi = async ({ productId }) => {
 }
 
 export const updateProductApi = async (productId, formData) => {
-  console.log([...formData]);
 
-  const response = await api.patch(`/seller/${productId}`, { formData });
+  console.log([...formData]);
+  const response = await api.patch(`/seller/${productId}`, formData);
   return response.data;
 }

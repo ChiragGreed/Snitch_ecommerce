@@ -15,9 +15,6 @@ const SellerProductsPage = () => {
         SellerProductsHandler();
     }, []);
 
-    useEffect(() => {
-        console.log(sellerProducts);
-    }, [sellerProducts]);
 
 
 

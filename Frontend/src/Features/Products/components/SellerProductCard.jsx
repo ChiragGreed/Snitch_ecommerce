@@ -24,9 +24,6 @@ const SellerProductCard = ({ product }) => {
             className="group relative bg-white rounded-sm overflow-hidden border border-[#e8e2db]
                  transition-all duration-500 hover:shadow-[0_12px_40px_rgba(26,22,18,0.08)]
                  hover:border-[#d4cdc6]"
-            onClick={() => {
-                navigate(`${product?._id}`)
-            }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
@@ -128,8 +125,8 @@ const SellerProductCard = ({ product }) => {
                     <span className="font-cormorant text-[20px] font-medium text-[#1a1612]">
                         {product?.price?.currency === 'INR' ? '₹' : product?.price?.currency || ''}{product?.price?.amount?.toLocaleString() || '0'}
                     </span>
-                    
-                    <button 
+
+                    <button
                         onClick={(e) => {
                             e.stopPropagation();
                             navigate(`${product?._id}`);
