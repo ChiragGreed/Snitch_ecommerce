@@ -31,16 +31,13 @@ const productSchema = new mongoose.Schema({
         {
             attribute: {
                 type: Map,
-                of: String
+                of: String,
+                required: [true, "Variant attribute is required"]
             },
-            images: [
-                {
-                    url: {
-                        type: String,
-                        required: [true, "Prodcut variant image Url is required"]
-                    }
-                }
-            ],
+            images: {
+                type: [String],
+                required: [true, "Prodcut variant image Url is required"]
+            },
             price: {
                 amount: {
                     type: Number,
