@@ -40,7 +40,7 @@ export const createVariant = async (req, res) => {
 
     const attribute = JSON.parse(req.body.attribute);
     const stock = req.body.stock || 0;
-    const price = req.body.price || product.price;
+    let price = req.body.price || product.price;
 
     if (req.body.price) {
         price = JSON.parse(price);
@@ -50,10 +50,9 @@ export const createVariant = async (req, res) => {
 
     const images = [...imagesUrl];
 
-    const newVariant = [...product.variants, { attribute, images, price, stock }];
-// Mujhe push vali approch try krnit hai 
-// https://www.google.com/search?q=why+this+error+CastError%3A+Cast+to+embedded+failed+for+value+%7B+attribute%3A+%7B+color%3A+red+%7D%2C+images%3A+%5B+https%3A%2F%2Fik.imagekit.io%2Flfqmv9rcq%2FSnitch%2FProducts%2FScreenshot_2026-04-13_210848_GP9eMRBYzb.png+%5D%2C+price%3A+%7B+amount%3A+6899%2C+currency%3A+INR+%2C+_id%3A+new+ObjectId%28+69ec776e79ba7ce0e4f43e9b+%29+%7D%2C+stock%3A+0+%7D+%28type+Object%29+at+path+variants+because+of+CastError&sca_esv=6dd148a2df4a2bfc&sxsrf=ANbL-n4kqmzrrDmW2aMwuuCg_MYdMPkPbw%3A1777114841710&source=hp&fbs=ADc_l-aN0CWEZBOHjofHoaMMDiKpaEWjvZ2Py1XXV8d8KvlI3tR7kVu8a3MULVA9bsoO0mCCFiZoMv28ux3eOJ39Q_ixnRJO66C0xBAUoovRT1WiWc2wxNjs2dVEyHrCoGo856EpETgVR969UYyuERa8kxh5cbF1pplYbyQG2Wrvvm6Xcn4EUy6OtZW0DbuVqZV2omfZMmB8jz2e6x3wpB3R-ziGWrtgDg&aep=1&ntc=1&sa=X&ved=2ahUKEwjBm_XW7IiUAxXkcWwGHWgFOc4Q2J8OegQIEBAI&biw=1536&bih=776&dpr=1.25&mstk=AUtExfAbAf2brYIXGRKGHoilRWlt-qxfSr6pDxpolWe_xwgQMc7rLEi4cl38Mn9YtdrJMr39uAx-FJFmGa-2F8DymOUHnr5RCWhnud55Br-0doP3qddAM6L0LjJlobUxzdTXthPvs7OojlZvts-rBeI_NEJ7SZxGP4A0rEm-k7iHABa3Fif3fQwew1SvgyVnYNqH06YeDy9VptltkPFcPaoDT35liWunjJ7etNym4E4zDLefgS62ECasCe323q3SrbrV90_FdFfbmW2x0nmQabKvrzJYMLzS2IzGVTX4UIEqLdFyOWIFe-zMjoTQ9fJtNyU-QM37suiIrTUfxg&csuir=1&mtid=3Z7saYT6JOOQseMP1Mfz4AY&udm=50
-    await productModel.findByIdAndUpdate(productId, { variants: newVariant })
+    product.variants.push({ attribute, images, price, stock });
+
+    await product.save();
 
     res.status(201).json({
         message: "Product Variant created",

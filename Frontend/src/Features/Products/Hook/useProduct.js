@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { createProductApi, getProductApi, getProductsApi, getSellerProductsApi, updateProductApi } from "../Service/productApi"
+import { createProductApi, createVariantApi, getProductApi, getProductsApi, getSellerProductsApi, updateProductApi } from "../Service/productApi"
 import { setAllProducts, setProduct } from "../State/productSlice.js"
 import { setSellerProducts } from "../State/productSlice.js"
 
@@ -22,6 +22,20 @@ const useProduct = () => {
         const productData = await createProductApi(formData);
         dispatch(setAllProducts(productData));
         return true;
+    }
+
+    const createVariantHandler = async ({ productId, attribute, price, stock, images }) => {
+        const formData = new FormData;
+        formData.append('attribute', JSON.stringify(attribute));
+        formData.append('price', JSON.stringify(price));
+        formData.append('stock', stock);
+
+        images.forEach((image) => {
+            formData.append('images', image);
+        });
+
+        await createVariantApi(productId, formData);
+
     }
 
     const SellerProductsHandler = async () => {
@@ -64,7 +78,7 @@ const useProduct = () => {
         return true;
     }
 
-    return { createProductHandler, SellerProductsHandler, ProductsHandler, ProductHandler, updateProductHandler }
+    return { createProductHandler, createVariantHandler, SellerProductsHandler, ProductsHandler, ProductHandler, updateProductHandler }
 }
 
 export default useProduct;
