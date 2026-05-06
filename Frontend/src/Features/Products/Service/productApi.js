@@ -34,3 +34,7 @@ export const createVariantApi = async (productId, formData) => {
   const response = await api.post(`/createVariant/${productId}`, formData);
   return response.data;
 }
+
+export const deleteVariantApi = async (productId, variantId) => {
+  await api.post(`/deleteVariant/${productId}`, { variantId: variantId });
+}

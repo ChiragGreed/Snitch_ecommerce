@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import SellerProtected from '../../Authentication/components/sellerProtected';
 
 const SellerProductDetail = () => {
-    const { ProductHandler, updateProductHandler, createVariantHandler } = useProduct();
+    const { ProductHandler, updateProductHandler, createVariantHandler, deleteVariantHandler } = useProduct();
     const productData = useSelector((state) => state.products.Product);
     const { productId } = useParams();
     const navigate = useNavigate();
@@ -22,6 +22,10 @@ const SellerProductDetail = () => {
         }
     });
 
+    const [existingVariant, setExistingVariant] = useState();
+
+    const [variantDeleteReq, setVariantDeleteReq] = useState([]);
+
     const [newVariants, setNewVariants] = useState([]);
     const [isAddingVariant, setIsAddingVariant] = useState(false);
     const [currentVariant, setCurrentVariant] = useState({
@@ -30,6 +34,7 @@ const SellerProductDetail = () => {
         stock: '',
         images: []
     });
+    const [variantError, setVariantError] = useState('');
 
     const variantImageInputRef = useRef(null);
 
@@ -128,11 +133,16 @@ const SellerProductDetail = () => {
         }));
     };
 
+    const handleVariantDeleteReq = async (variantId) => {
+        setVariantDeleteReq(prev => ([...prev, variantId]));
+    }
+
     const addVariantToStaging = () => {
         if (!currentVariant.stock) {
-            alert("Stock is required for a variant.");
+            setVariantError("Stock is required for a variant.");
             return;
         }
+        setVariantError('');
         setNewVariants(prev => [...prev, currentVariant]);
         setCurrentVariant({
             attributes: [{ key: '', value: '' }],
@@ -160,10 +170,15 @@ const SellerProductDetail = () => {
             const updatedTitle = FormData.title === productData.title ? null : FormData.title;
             const updatedDescription = FormData.description === productData.description ? null : FormData.description;
             const updatedPrice = JSON.stringify(FormData.price) === JSON.stringify(productData.price) ? null : FormData.price;
+            const updatedVariants = JSON.stringify(FormData.variants) === JSON.stringify(productData.variants) ? null : FormData.variants;
             const updatedImages = FormData.images;
 
             // Update main product
-            await updateProductHandler(productId, updatedTitle, updatedDescription, updatedPrice, updatedImages);
+            await updateProductHandler(productId, updatedTitle, updatedDescription, updatedPrice, updatedVariants, updatedImages);
+
+            // Delete variant
+            await deleteVariantHandler( productId, variantDeleteReq );
+
 
             // Create new variants
             for (const variant of newVariants) {
@@ -184,6 +199,7 @@ const SellerProductDetail = () => {
                 });
             }
 
+            setVariantDeleteReq([]);
             setNewVariants([]);
             alert("Product and variants updated successfully.");
         }
@@ -292,6 +308,64 @@ const SellerProductDetail = () => {
                                     <h3 className="font-cormorant text-3xl font-light tracking-tight">Product Variants</h3>
                                     <p className="text-[13px] text-[#9a9089] font-light">Create versions of this product with unique attributes like color or size.</p>
                                 </div>
+
+                                {/* Existing Variants */}
+                                {productData?.variants?.length > 0 && (
+                                    <div className="space-y-4 mb-8">
+                                        <h4 className="text-[11px] uppercase tracking-[0.1em] text-[#8a6e52] font-medium">Active Variants ({productData.variants.length})</h4>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            {productData.variants.map((v, idx) => {
+                                                // Handle whether backend returns 'attribute' or 'attributes'
+                                                const attributesObj = v.attribute || v.attributes || {};
+                                                return (
+                                                    <div key={idx} className="bg-white p-5 border border-[#e8e2db] rounded-sm relative group opacity-90">
+                                                        <div className="space-y-2">
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {/* If it's stored as an object {key: value} */}
+                                                                {typeof attributesObj === 'object' && !Array.isArray(attributesObj)
+                                                                    ? Object.entries(attributesObj).map(([key, value], i) => (
+                                                                        <span key={i} className="px-2 py-0.5 bg-[#f7f4f0] text-[10px] uppercase tracking-wider text-[#8a6e52] rounded-full">
+                                                                            {key}: {value}
+                                                                        </span>
+                                                                    ))
+                                                                    : Array.isArray(attributesObj)
+                                                                        ? attributesObj.map((attr, i) => (
+                                                                            <span key={i} className="px-2 py-0.5 bg-[#f7f4f0] text-[10px] uppercase tracking-wider text-[#8a6e52] rounded-full">
+                                                                                {attr.key || Object.keys(attr)[0]}: {attr.value || Object.values(attr)[0]}
+                                                                            </span>
+                                                                        ))
+                                                                        : null
+                                                                }
+                                                            </div>
+                                                            <div
+                                                                className='absolute top-3 right-5 transition-normal p-1 rounded-sm hover:bg-[#f7f4f0]'
+                                                                onClick={() => {
+                                                                    handleVariantDeleteReq(v._id);
+                                                                }}>
+
+                                                                <svg className='h-4' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path></svg>
+
+                                                            </div>
+                                                            <div className="text-[12px] text-[#1a1612] flex justify-between pt-2">
+                                                                <span>Stock: {v.stock}</span>
+                                                                <span className="italic font-cormorant text-2xl text-[#8a6e52]">
+                                                                    {v.price?.amount ? `₹${v.price.amount}` : "Inherited Price"}
+                                                                </span>
+                                                            </div>
+                                                            {v.images?.length > 0 && (
+                                                                <div className="flex gap-1 pt-2">
+                                                                    {v.images.map((img, i) => (
+                                                                        <img key={i} src={getImageSource(img.url || img)} className="w-8 h-8 object-cover rounded-xs" alt="" />
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* Variant List (Staged) */}
                                 {newVariants.length > 0 && (
@@ -471,6 +545,11 @@ const SellerProductDetail = () => {
                                             </div>
                                         </div>
 
+                                        {variantError && (
+                                            <div className="text-red-500 text-[11px] tracking-[0.05em] text-center mb-2">
+                                                {variantError}
+                                            </div>
+                                        )}
                                         <button
                                             onClick={addVariantToStaging}
                                             className="w-full py-4 border border-[#1a1612] text-[#1a1612] text-[11px] uppercase tracking-[0.2em] font-medium hover:bg-[#1a1612] hover:text-[#f7f4f0] transition-all duration-300 rounded-sm"

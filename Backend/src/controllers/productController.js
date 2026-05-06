@@ -61,6 +61,40 @@ export const createVariant = async (req, res) => {
 
 }
 
+export const deleteVariant = async (req, res) => {
+
+    const { productId } = req.params;
+    const { variantId } = req.body;
+
+    if (!productId) return res.status(400).json({
+        message: "Product Id is missing",
+        success: false,
+        error: "Product Id not found in params"
+    });
+
+    const product = await productModel.findOne({ _id: productId, sellerId: req.user });
+
+    if (!product) return res.status(404).json({
+        message: "Product not found",
+        success: false,
+        error: "Product not found"
+    })
+
+
+    const variantIdx = product.variants.findIndex(variant => variant._id == variantId);
+
+    if (variantIdx != -1) product.variants.splice(variantIdx, 1);
+
+    await product.save();
+
+    res.status(201).json({
+        message: "Product Variant deleted",
+        success: true,
+        product
+    })
+
+}
+
 export const getSellerProducts = async (req, res) => {
     const products = await productModel.find({ sellerId: req.user });
 
@@ -119,10 +153,14 @@ export const updateProduct = async (req, res) => {
         error: "Product Id not found in params"
     })
 
-    let { title, description, price, existingImages } = req.body;
+    let { title, description, price, variants, existingImages } = req.body;
 
     if (typeof price == 'string') {
         price = JSON.parse(price);
+    }
+
+    if (typeof variants == 'string') {
+        variants = JSON.parse(variants);
     }
 
     if (existingImages) {
@@ -152,6 +190,10 @@ export const updateProduct = async (req, res) => {
 
     if (price !== undefined) {
         updateFields.price = price;
+    }
+
+    if (variants !== undefined) {
+        updateFields.variants = variants;
     }
 
     updateFields.images = [...existingImages, ...imagesUrl];
