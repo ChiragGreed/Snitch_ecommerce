@@ -1,8 +1,8 @@
 import express from 'express';
-import { getMe, googleAuth, login, protectedRoute, register } from '../controllers/authController.js';
+import { forgotPassword, getMe, googleAuth, login, protectedRoute, register, resetPassword, sessionProtectedRoute } from '../controllers/authController.js';
 import { loginValidator, registerValidator } from '../validation/authValidation.js';
 import passport from 'passport';
-import { verifyToken } from '../middlewares/authMiddleware.js';
+import { verifySessionId, verifyToken } from '../middlewares/authMiddleware.js';
 
 const authRouter = express.Router();
 
@@ -11,6 +11,12 @@ authRouter.post('/register', registerValidator, register);
 authRouter.post('/login', loginValidator, login);
 
 authRouter.get('/getMe', verifyToken, getMe);
+
+authRouter.post('/forgotPassword', forgotPassword);
+
+authRouter.patch('/resetPassword/:sessionId', verifySessionId, resetPassword);
+
+authRouter.get('/sessionProtectedRoute', verifySessionId, sessionProtectedRoute);
 
 authRouter.get('/protectedRoute', verifyToken, protectedRoute);
 

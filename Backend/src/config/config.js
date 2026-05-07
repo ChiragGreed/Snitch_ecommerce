@@ -17,6 +17,10 @@ if (!process.env.GOOGLE_CLIENT_SECRET) {
     throw new Error("Google client secret not found in environmental variables")
 }
 
+if (!process.env.GOOGLE_EMAIL_USER) {
+    throw new Error("Google Email user not found in environmental variables")
+}
+
 if (!process.env.IMAGEKIT_PRIVATE_KEY) {
     throw new Error("Imagekit private key not found in environmental variables")
 }
@@ -24,7 +28,12 @@ if (!process.env.IMAGEKIT_PRIVATE_KEY) {
 export const Config = {
     MONGO_URI: process.env.MONGO_URI,
     JWT_SECRET: process.env.JWT_SECRET,
+
+    IMAGEKIT_PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY,
+
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-    IMAGEKIT_PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY
+    GOOGLE_REFRESH_TOKEN: process.env.GOOGLE_REFRESH_TOKEN,
+    GOOGLE_EMAIL_USER: process.env.GOOGLE_EMAIL_USER,
+
 }

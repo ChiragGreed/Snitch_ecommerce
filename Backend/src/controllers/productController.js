@@ -80,7 +80,6 @@ export const deleteVariant = async (req, res) => {
         error: "Product not found"
     })
 
-
     const variantIdx = product.variants.findIndex(variant => variant._id == variantId);
 
     if (variantIdx != -1) product.variants.splice(variantIdx, 1);

@@ -28,3 +28,22 @@ export const protectedRouteApi = async () => {
     const response = await api.get('/protectedRoute');
     return response.data;
 }
+
+
+
+export const forgotPasswordApi = async (clientEmail) => {
+    const response = await api.post(`/forgotPassword`, { clientEmail });
+    return response.data;
+}
+
+
+export const resetPasswordApi = async (sessionId, newPassword, confirmationPassword) => {
+    const response = await api.patch(`/resetPassword/${sessionId}`, { newPassword, confirmationPassword });
+    return response.data;
+
+}
+
+export const sessionProtectedRouteApi = async () => {
+    const response = await api.get('/sessionProtectedRoute');
+    return response.data;
+}

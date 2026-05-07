@@ -36,13 +36,35 @@ export const verifyToken = async (req, res, next) => {
 
     const decodedToken = JWT.verify(token, Config.JWT_SECRET);
 
-    if(!decodedToken) return res.status(401).json({
-        message:"User not authorised",
+    if (!decodedToken) return res.status(401).json({
+        message: "User not authorised",
         success: false,
         error: "Invalid token"
     })
 
     req.user = decodedToken.userId;
+
+    next();
+}
+
+export const verifySessionId = async (req, res, next) => {
+    const { sessionId } = req.params;
+
+    if (!sessionId) res.status(403).json({
+        message: "SessionId not found",
+        success: false,
+        error: "SessionId not found"
+    })
+
+    const { clientEmail } = JWT.verify(sessionId, Config.JWT_SECRET);
+
+    if (!clientEmail) res.status(403).json({
+        message: "Invalid SessionId",
+        success: false,
+        error: "SessionId is invalid"
+    })
+
+    req.clientEmail = clientEmail;
 
     next();
 }
