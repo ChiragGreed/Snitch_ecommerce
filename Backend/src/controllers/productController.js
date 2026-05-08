@@ -63,8 +63,10 @@ export const createVariant = async (req, res) => {
 
 export const deleteVariant = async (req, res) => {
 
+
     const { productId } = req.params;
     const { variantId } = req.body;
+    console.log(variantId);
 
     if (!productId) return res.status(400).json({
         message: "Product Id is missing",
@@ -80,9 +82,13 @@ export const deleteVariant = async (req, res) => {
         error: "Product not found"
     })
 
-    const variantIdx = product.variants.findIndex(variant => variant._id == variantId);
+    variantId.forEach(deleteReq => {
 
-    if (variantIdx != -1) product.variants.splice(variantIdx, 1);
+        const variantIdx = product.variants.findIndex(variant => variant._id == deleteReq);
+
+        if (variantIdx != -1) product.variants.splice(variantIdx, 1);
+
+    });
 
     await product.save();
 

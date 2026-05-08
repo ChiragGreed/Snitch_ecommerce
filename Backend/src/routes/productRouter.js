@@ -14,11 +14,17 @@ const upload = multer({
 
 
 ProductRouter.post('/create', authSeller, upload.array('images', 8), createProduct);
+
 ProductRouter.post('/createVariant/:productId', authSeller, upload.array('images', 8), createVariant);
+
 ProductRouter.post('/deleteVariant/:productId', authSeller, deleteVariant);
+
 ProductRouter.get('/seller', authSeller, getSellerProducts);
+
 ProductRouter.patch('/seller/:productId', authSeller, upload.array('images', 8), updateProduct);
+
 ProductRouter.get('/:productId', getProduct);
+
 ProductRouter.get('/', getProducts);
 
 

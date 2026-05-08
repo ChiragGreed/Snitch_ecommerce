@@ -134,7 +134,12 @@ const SellerProductDetail = () => {
     };
 
     const handleVariantDeleteReq = async (variantId) => {
-        setVariantDeleteReq(prev => ([...prev, variantId]));
+        setVariantDeleteReq(prev => {
+            if (prev && prev.includes(variantId)) {
+                return prev.filter(id => id !== variantId);
+            }
+            return [...prev, variantId];
+        });
     }
 
     const addVariantToStaging = () => {
@@ -176,8 +181,8 @@ const SellerProductDetail = () => {
             // Update main product
             await updateProductHandler(productId, updatedTitle, updatedDescription, updatedPrice, updatedVariants, updatedImages);
 
-            // Delete variant
-            await deleteVariantHandler( productId, variantDeleteReq );
+            // Delete variant\
+            await deleteVariantHandler(productId, variantDeleteReq);
 
 
             // Create new variants
@@ -337,13 +342,18 @@ const SellerProductDetail = () => {
                                                                         : null
                                                                 }
                                                             </div>
+                                                            {/* /////////////////////////////////////////////////////////////////////// */}
                                                             <div
                                                                 className='absolute top-3 right-5 transition-normal p-1 rounded-sm hover:bg-[#f7f4f0]'
                                                                 onClick={() => {
                                                                     handleVariantDeleteReq(v._id);
                                                                 }}>
 
-                                                                <svg className='h-4' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path></svg>
+                                                                {variantDeleteReq.includes(v._id) ? (
+                                                                    <svg className='h-4' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.9997 10.5865L16.9495 5.63672L18.3637 7.05093L13.4139 12.0007L18.3637 16.9504L16.9495 18.3646L11.9997 13.4149L7.04996 18.3646L5.63574 16.9504L10.5855 12.0007L5.63574 7.05093L7.04996 5.63672L11.9997 10.5865Z"></path></svg>
+                                                                ) : (
+                                                                    <svg className='h-4' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17 6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6ZM18 8H6V20H18V8ZM9 11H11V17H9V11ZM13 11H15V17H13V11ZM9 4V6H15V4H9Z"></path></svg>
+                                                                )}
 
                                                             </div>
                                                             <div className="text-[12px] text-[#1a1612] flex justify-between pt-2">
