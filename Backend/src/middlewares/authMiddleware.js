@@ -48,7 +48,9 @@ export const verifyToken = async (req, res, next) => {
 }
 
 export const verifySessionId = async (req, res, next) => {
-    const { sessionId } = req.params;
+    const { sessionId } = req.cookies;
+
+    console.log(sessionId);
 
     if (!sessionId) res.status(403).json({
         message: "SessionId not found",

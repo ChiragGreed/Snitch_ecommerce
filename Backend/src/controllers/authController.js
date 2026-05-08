@@ -120,7 +120,9 @@ export const forgotPassword = async (req, res) => {
     }, Config.JWT_SECRET,
         { expiresIn: '1h' });
 
-    const redirectUserApi = `http://localhost:5173/resetPassword/${sessionId}`;
+    res.cookie("sessionId", sessionId);
+
+    const redirectUserApi = `http://localhost:5173/resetPassword/`;
 
     const subject = 'Request to Reset Password';
     const html = `<!DOCTYPE html>
@@ -196,7 +198,7 @@ export const resetPassword = async (req, res) => {
 
     const newHash = await bcrypt.hash(newPassword, 10);
 
-    await userModel.findByIdAndUpdate(userId, { password: newHash }).select("+password");
+    await userModel.findByIdAndUpdate(user._id, { password: newHash }).select("+password");
 
     res.status(200).json({
         message: "Password Changed successfully",

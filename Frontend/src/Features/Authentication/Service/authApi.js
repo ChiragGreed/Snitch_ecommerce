@@ -29,21 +29,18 @@ export const protectedRouteApi = async () => {
     return response.data;
 }
 
-
-
 export const forgotPasswordApi = async (clientEmail) => {
     const response = await api.post(`/forgotPassword`, { clientEmail });
     return response.data;
 }
 
-
-export const resetPasswordApi = async (sessionId, newPassword, confirmationPassword) => {
-    const response = await api.patch(`/resetPassword/${sessionId}`, { newPassword, confirmationPassword });
+export const resetPasswordApi = async (newPassword, confirmationPassword) => {
+    const response = await api.patch(`/resetPassword`, { newPassword, confirmationPassword });
     return response.data;
 
 }
 
-export const sessionProtectedRouteApi = async () => {
-    const response = await api.get('/sessionProtectedRoute');
+export const checkSessionIdApi = async () => {
+    const response = await api.get('/checkSessionId');
     return response.data;
 }

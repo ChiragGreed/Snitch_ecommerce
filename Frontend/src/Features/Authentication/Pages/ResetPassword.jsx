@@ -5,9 +5,7 @@ import { useEffect } from 'react';
 
 const ResetPassword = () => {
     const navigate = useNavigate();
-    const { resetPasswordHandler, sessionProtectedRouteHandler } = useAuth();
-    const { sessionId } = useParams();
-    console.log(sessionId);
+    const { resetPasswordHandler, checkSessionIdHandler } = useAuth();
 
     const [formData, setFormData] = useState({
         newPassword: '',
@@ -18,12 +16,17 @@ const ResetPassword = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
 
-
-    useEffect(() => {
-        if (sessionProtectedRouteHandler()) {
-            // navigate("/");
+    const checkSessionId = async () => {
+        const check = await checkSessionIdHandler();
+        console.log(check);
+        if (!check) {
+            navigate("/");
             return;
         }
+    }
+
+    useEffect(() => {
+        checkSessionId()
     }, []);
 
     const validateForm = () => {
@@ -33,13 +36,13 @@ const ResetPassword = () => {
             newErrors.newPassword = 'New password is required';
         } else if (formData.newPassword.length < 8) {
             newErrors.newPassword = 'Password must be at least 8 characters';
+        } else if (!/\d/.test(formData.newPassword)) { // ਨੰਬਰ ਚੈੱਕ ਕਰਨ ਲਈ regex
+            newErrors.newPassword = 'Password must contain a number';
         }
 
         if (!formData.confirmPassword.trim()) {
             newErrors.confirmPassword = 'Please confirm your password';
-        }
-
-        if (formData.newPassword !== formData.confirmPassword) {
+        } else if (formData.newPassword !== formData.confirmPassword) {
             newErrors.confirmPassword = 'Passwords do not match';
         }
 
@@ -71,7 +74,7 @@ const ResetPassword = () => {
 
         setIsLoading(true);
         try {
-            await resetPasswordHandler(sessionId, formData.newPassword, formData.confirmPassword);
+            await resetPasswordHandler(formData.newPassword, formData.confirmPassword);
             setSuccessMessage('Password reset successfully! Redirecting...');
             setFormData({ newPassword: '', confirmPassword: '' });
 
