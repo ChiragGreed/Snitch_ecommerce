@@ -35,6 +35,7 @@ const SellerProductDetail = () => {
         images: []
     });
     const [variantError, setVariantError] = useState('');
+    const [showSuccessCard, setShowSuccessCard] = useState(false);
 
     const variantImageInputRef = useRef(null);
 
@@ -206,7 +207,7 @@ const SellerProductDetail = () => {
 
             setVariantDeleteReq([]);
             setNewVariants([]);
-            alert("Product and variants updated successfully.");
+            setShowSuccessCard(true);
         }
         catch (error) {
             console.error("Failed to update product:", error);
@@ -234,7 +235,10 @@ const SellerProductDetail = () => {
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <button className="px-6 py-2.5 text-[11px] font-medium uppercase tracking-[0.15em] border border-[#d4cdc6] text-[#9a9089] hover:bg-white hover:text-[#1a1612] transition-all duration-300 rounded-sm">
+                            <button
+                                className="px-6 py-2.5 text-[11px] font-medium uppercase tracking-[0.15em] border border-[#d4cdc6] text-[#9a9089] hover:bg-white hover:text-[#1a1612] transition-all duration-300 rounded-sm"
+                                onClick={() => { navigate('/product/sellerProducts') }}>
+
                                 Discard
                             </button>
                             <button onClick={handleSubmit} className="px-8 py-2.5 bg-[#1a1612] text-[#f7f4f0] text-[11px] font-medium uppercase tracking-[0.15em] hover:bg-[#2e2620] transition-all duration-300 rounded-sm shadow-lg shadow-[#1a1612]/10">
@@ -245,6 +249,28 @@ const SellerProductDetail = () => {
                 </header>
 
                 <main className="max-w-6xl mx-auto px-6 py-12">
+                    {/* Success Card */}
+                    {showSuccessCard && (
+                        <div className="mb-8 animate-in fade-in slide-in-from-top-4 duration-500">
+                            <div className="bg-white border border-[#e8e2db] rounded-sm p-8 flex items-center gap-6 shadow-lg shadow-[#1a1612]/5">
+                                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#f7f4f0] flex items-center justify-center">
+                                    <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <div className="flex-1">
+                                    <h3 className="font-cormorant text-xl font-light text-[#1a1612]">Product changes saved</h3>
+                                    <p className="text-[13px] text-[#9a9089] mt-1">Your product have been successfully updated.</p>
+                                </div>
+                                <button
+                                    onClick={() => navigate('/product/sellerProducts')}
+                                    className="flex-shrink-0 px-6 py-2.5 bg-[#1a1612] text-[#f7f4f0] text-[11px] font-medium uppercase tracking-[0.15em] hover:bg-[#2e2620] transition-all duration-300 rounded-sm whitespace-nowrap"
+                                >
+                                    Back to Collection
+                                </button>
+                            </div>
+                        </div>
+                    )}
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
 
                         {/* ── LEFT COLUMN: FORM ── */}
