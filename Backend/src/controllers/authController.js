@@ -13,39 +13,40 @@ function tokenGeneration(user, res) {
         role: user.role
     }, Config.JWT_SECRET,
         { expiresIn: '7d' });
-
-    res.cookie("token", token);
-
-}
-
-export const register = async (req, res) => {
-    const { fullname, email, contact, password, role } = req.body;
-
-    const userExist = await userModel.findOne({ $or: [{ fullname }, { email }] });
-
-    if (userExist) return res.status(400).json({
-        message: "User already exist from this " + (userExist.email == email ? "email" : "username"),
-        success: false,
-        error: "User already exist"
-    })
-
-    const user = await userModel.create({ fullname, email, password, contact, role });
-
-    tokenGeneration(user, res);
-
-    res.status(201).json({
-        message: "User registered",
-        success: true,
-        user
-    })
-
+    
+        
+        res.cookie("token", token);
+        
+    }
+    
+    export const register = async (req, res) => {
+        const { fullname, email, contact, password, role } = req.body;
+        
+        const userExist = await userModel.findOne({ $or: [{ fullname }, { email }] });
+        
+        if (userExist) return res.status(400).json({
+            message: "User already exist from this " + (userExist.email == email ? "email" : "username"),
+            success: false,
+            error: "User already exist"
+        })
+        
+        const user = await userModel.create({ fullname, email, password, contact, role });
+        
+        tokenGeneration(user, res);
+        
+        res.status(201).json({
+            message: "User registered",
+            success: true,
+            user
+        })
+        
 }
 
 export const login = async (req, res) => {
     const { email, password } = req.body;
-
+    
     const user = await userModel.findOne({ email }).select('+password');
-
+    
     if (!user) return res.status(400).json({
         message: "Invalid credentials",
         success: false,

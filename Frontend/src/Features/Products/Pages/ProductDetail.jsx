@@ -18,10 +18,12 @@ const ProductDetail = () => {
     }, [productId]);
 
     useEffect(() => {
-        if (productData?.images?.length > 0) {
+        if (selectedVariant?.images?.length > 0) {
+            setMainImage(selectedVariant.images[0]);
+        } else if (productData?.images?.length > 0) {
             setMainImage(productData.images[0]);
         }
-    }, [productData]);
+    }, [productData, selectedVariant]);
 
     // Extract unique attribute types and their available values
     const attributeStructure = useMemo(() => {
@@ -120,9 +122,9 @@ const ProductDetail = () => {
                         </div>
 
                         {/* Thumbnails Strip */}
-                        {productData.images && productData.images.length > 1 && (
+                        {(selectedVariant?.images && selectedVariant.images.length > 1 || productData.images && productData.images.length > 1) && (
                             <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
-                                {productData.images.map((img, idx) => (
+                                {(selectedVariant?.images || productData.images).map((img, idx) => (
                                     <button
                                         key={idx}
                                         onClick={() => setMainImage(img)}

@@ -1,3 +1,4 @@
+import cartModel from "../models/cartModel.js";
 import productModel from "../models/productModel.js";
 import ImagetKitUpload from "../services/imagekit.js";
 
@@ -222,6 +223,53 @@ export const updateProduct = async (req, res) => {
         message: "Product Updated",
         success: true,
         updatedProduct
+    })
+
+}
+
+export const addItem = async (req, res) => {
+
+    const userId = req.user;
+
+    const { productId, variantId } = req.params;
+    const { quantity } = req.body;
+
+
+    if (!productId || !variantId) return res.status(400).json({
+        message: "ProductId or VariantId not found",
+        succees: false,
+        err: "ProductId or VariantId missing in params"
+    })
+
+    const product = await productModel.findOne({ _id: productId, 'variants._id': variantId });
+
+    if (!product) return res.status(404).json({
+        message: "Product variant do not exist",
+        succees: false,
+        err: "Product variant do not exist"
+    })
+
+    let cart = await cartModel.findOne({ userId, 'items.productId': productId, 'items.variantId': variantId });
+
+    if (!cart) {
+
+        cart = await cartModel.create({ userId, items: [{ productId, variantId, quantity }] });
+
+        return res.status(200).json({
+            message: "Item added to cart",
+            succees: true
+        })
+    }
+
+    cart.items.forEach(item => {
+        if (item.productId == productId && item.variantId == variantId) item.quantity++;
+    });
+
+    await cart.save();
+
+    res.status(200).json({
+        message: "Item added to cart",
+        succees: true
     })
 
 }
