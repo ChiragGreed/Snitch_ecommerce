@@ -1,7 +1,8 @@
 import express from 'express';
-import { addItem, createProduct, createVariant, deleteVariant, getProduct, getProducts, getSellerProducts, updateProduct } from '../controllers/productController.js';
+import { addItemToCart, createProduct, createVariant, deleteVariant, getProduct, getProducts, getSellerProducts, updateProduct } from '../controllers/productController.js';
 import { authSeller, verifyToken } from '../middlewares/authMiddleware.js';
 import multer from 'multer';
+import { addToCartValidator } from '../validation/cartValidation.js';
 
 const ProductRouter = express.Router();
 
@@ -25,7 +26,7 @@ ProductRouter.patch('/seller/:productId', authSeller, upload.array('images', 8),
 
 ProductRouter.get('/:productId', getProduct);
 
-ProductRouter.post('/addToCart/:productId/:variantId', verifyToken, addItem);
+ProductRouter.post('/addToCart/:productId/:variantId', verifyToken, addToCartValidator, addItemToCart);
 
 ProductRouter.get('/', getProducts);
 

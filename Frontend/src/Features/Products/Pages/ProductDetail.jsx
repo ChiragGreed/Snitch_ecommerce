@@ -12,6 +12,7 @@ const ProductDetail = () => {
     const [mainImage, setMainImage] = useState("");
     const [selectedAttributes, setSelectedAttributes] = useState({});
     const [selectedVariant, setSelectedVariant] = useState(null);
+    const { addItemToCartHandler } = useProduct();
 
     useEffect(() => {
         ProductHandler({ productId });
@@ -28,7 +29,7 @@ const ProductDetail = () => {
     // Extract unique attribute types and their available values
     const attributeStructure = useMemo(() => {
         if (!productData?.variants?.length) return {};
-        
+
         const structure = {};
         productData.variants.forEach((variant) => {
             const attrs = variant.attribute || variant.attributes || {};
@@ -41,27 +42,27 @@ const ProductDetail = () => {
                 });
             }
         });
-        
+
         // Convert Sets to Arrays
         Object.keys(structure).forEach(key => {
             structure[key] = Array.from(structure[key]).sort();
         });
-        
+
         return structure;
     }, [productData?.variants]);
 
     // Find matching variant based on selected attributes
     useEffect(() => {
         if (!productData?.variants?.length) return;
-        
+
         const matchingVariant = productData.variants.find((variant) => {
             const attrs = variant.attribute || variant.attributes || {};
             return Object.keys(selectedAttributes).length > 0 &&
-                   Object.entries(selectedAttributes).every(
-                       ([key, value]) => attrs[key] === value
-                   );
+                Object.entries(selectedAttributes).every(
+                    ([key, value]) => attrs[key] === value
+                );
         });
-        
+
         setSelectedVariant(matchingVariant || null);
     }, [selectedAttributes, productData?.variants]);
 
@@ -175,7 +176,7 @@ const ProductDetail = () => {
                                     <h3 className="text-[10px] uppercase tracking-[0.2em] text-[#1a1612] font-bold">
                                         Select Options
                                     </h3>
-                                    
+
                                     {Object.entries(attributeStructure).map(([attrName, attrValues]) => {
                                         // Helper function to get the first image of a variant with this attribute value
                                         const getImageForAttributeValue = (attrValue) => {
@@ -195,7 +196,7 @@ const ProductDetail = () => {
                                                     {attrValues.map((value) => {
                                                         const isSelected = selectedAttributes[attrName] === value;
                                                         const imageUrl = getImageForAttributeValue(value);
-                                                        
+
                                                         return (
                                                             <div key={`${attrName}-${value}`} className="flex flex-col items-center gap-2">
                                                                 <button
@@ -217,9 +218,9 @@ const ProductDetail = () => {
                                                                         }`}
                                                                 >
                                                                     {imageUrl ? (
-                                                                        <img 
-                                                                            src={imageUrl} 
-                                                                            alt={value} 
+                                                                        <img
+                                                                            src={imageUrl}
+                                                                            alt={value}
                                                                             className="w-full h-full object-cover"
                                                                         />
                                                                     ) : (
@@ -280,9 +281,10 @@ const ProductDetail = () => {
                                 <button className={`w-full py-4 text-[#f7f4f0] font-dm text-[12px] font-medium uppercase tracking-[0.2em] 
                                                  rounded-sm transition-all duration-300 active:scale-[0.98] shadow-lg
                                                  ${selectedVariant && selectedVariant.stock > 0
-                                                     ? 'bg-[#1a1612] hover:bg-[#2e2620] cursor-pointer'
-                                                     : 'bg-[#c0b8b0] cursor-not-allowed'}`}
+                                        ? 'bg-[#1a1612] hover:bg-[#2e2620] cursor-pointer'
+                                        : 'bg-[#c0b8b0] cursor-not-allowed'}`}
                                     disabled={!selectedVariant || selectedVariant.stock === 0}
+                                    onClick={() => { addItemToCartHandler(productId, selectedVariant._id) }}
                                 >
                                     {selectedVariant
                                         ? selectedVariant.stock > 0
@@ -293,10 +295,7 @@ const ProductDetail = () => {
                                             : 'Purchase Now'
                                     }
                                 </button>
-                                <button className="w-full py-4 bg-white border border-[#e8e2db] text-[#1a1612] font-dm text-[12px] font-medium uppercase tracking-[0.2em] 
-                                                 rounded-sm transition-all duration-300 hover:bg-[#fcf9f5] hover:border-[#c0b8b0] active:scale-[0.98]">
-                                    Add to Curator's Bag
-                                </button>
+
                             </div>
                         </div>
 

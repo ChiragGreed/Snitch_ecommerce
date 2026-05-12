@@ -2,10 +2,10 @@ import { body, param, validationResult } from 'express-validator';
 
 
 const validationHandler = (req, res, next) => {
-    const erros = validationResult(req);
+    const errors = validationResult(req);
 
-    if (!erros.isEmpty()) {
-        return res.status(400).json({ errors: erros.array() })
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
     }
 
     next();

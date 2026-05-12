@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { createProductApi, createVariantApi, deleteVariantApi, getProductApi, getProductsApi, getSellerProductsApi, updateProductApi } from "../Service/productApi"
+import { addItemToCartApi, createProductApi, createVariantApi, deleteVariantApi, getProductApi, getProductsApi, getSellerProductsApi, updateProductApi } from "../Service/productApi"
 import { setAllProducts, setProduct } from "../State/productSlice.js"
 import { setSellerProducts } from "../State/productSlice.js"
 
@@ -83,7 +83,12 @@ const useProduct = () => {
         return true;
     }
 
-    return { createProductHandler, createVariantHandler, deleteVariantHandler, SellerProductsHandler, ProductsHandler, ProductHandler, updateProductHandler }
+    const addItemToCartHandler = async (productId, variantId) => {
+        const response = await addItemToCartApi(productId, variantId);
+        return response;
+    }
+
+    return { createProductHandler, createVariantHandler, deleteVariantHandler, SellerProductsHandler, ProductsHandler, ProductHandler, updateProductHandler, addItemToCartHandler }
 }
 
 export default useProduct;

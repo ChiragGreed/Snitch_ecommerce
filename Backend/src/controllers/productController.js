@@ -1,3 +1,4 @@
+import { variantStock } from "../dao/variantStock.dao.js";
 import cartModel from "../models/cartModel.js";
 import productModel from "../models/productModel.js";
 import ImagetKitUpload from "../services/imagekit.js";
@@ -227,7 +228,7 @@ export const updateProduct = async (req, res) => {
 
 }
 
-export const addItem = async (req, res) => {
+export const addItemToCart = async (req, res) => {
 
     const userId = req.user;
 
@@ -253,6 +254,13 @@ export const addItem = async (req, res) => {
 
     if (!cart) {
 
+        const stock = await variantStock(productId, variantId);
+
+        if (quantity > stock) return res.status(400).json({
+            message: "Insuffecient stock for required item quantity",
+            success: false,
+        })
+
         cart = await cartModel.create({ userId, items: [{ productId, variantId, quantity }] });
 
         return res.status(200).json({
@@ -261,9 +269,20 @@ export const addItem = async (req, res) => {
         })
     }
 
+
+    const ExistingQuantity = cart.items.find((item) => item.productId == productId && item.variantId).quantity;
+
+    const stock = await variantStock(productId, variantId);
+
+    if ((ExistingQuantity + quantity) > stock) return res.status(400).json({
+        message: "Can not add items more than available stock",
+        success: false,
+    })
+
     cart.items.forEach(item => {
         if (item.productId == productId && item.variantId == variantId) item.quantity++;
     });
+
 
     await cart.save();
 
