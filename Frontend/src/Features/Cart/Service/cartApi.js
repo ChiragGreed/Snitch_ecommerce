@@ -12,8 +12,15 @@ export const addItemToCartApi = async (productId, variantId) => {
 export const getCartItemsAPi = async () => {
 
   const response = await api.get('/items');
-  console.log(response.data);
   return response.data;
 }
 
+export const addItemQuantityApi = async (itemId) => {
+  const response = await api.post('/addItemQuantity', { itemId });
+}
+
+
+export const subItemQuantityApi = async (itemId) => {
+  const response = await api.post('/subItemQuantity', { itemId });
+}
 

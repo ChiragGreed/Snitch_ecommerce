@@ -64,7 +64,7 @@ export const addItemToCart = async (req, res) => {
     if (existingItem.quantity >= stock) {
 
         return res.status(400).json({
-            message: "Can not add items more than available stock",
+            message: "Insuffecient stock for required item quantity",
             success: false,
         })
     }
@@ -97,6 +97,87 @@ export const getCartItems = async (req, res) => {
         message: "Fetched cart items",
         success: true,
         cart
+    })
+
+}
+
+export const addItemQuantity = async (req, res) => {
+    const userId = req.user;
+    const { itemId } = req.body;
+
+    let cart = await cartModel.findOne({ userId });
+
+    if (!cart) return res.status(404).json({
+        message: "Invalid cart id",
+        success: false,
+    })
+
+    const item = cart.items.find((item) => item._id == itemId);
+
+    if (!item) return res.status(404).json({
+        message: "Item not found in cart",
+        success: false,
+    })
+
+    const stock = await variantStock(item.productId.toString(), item.variantId.toString());
+
+
+    if (item.quantity >= stock) return res.status(400).json({
+        message: "Insuffecient stock for required item quantity",
+        success: false
+    })
+
+    item.quantity++;
+
+
+    await cart.save();
+
+    res.status(200).json({
+        message: "Item quantity increased",
+        success: true,
+        item
+    })
+
+}
+
+export const subItemQuantity = async (req, res) => {
+    const userId = req.user;
+    const { itemId } = req.body;
+
+    let cart = await cartModel.findOne({ userId });
+
+    if (!cart) return res.status(404).json({
+        message: "Invalid cart id",
+        success: false,
+    })
+
+    const item = cart.items.find((item) => item._id == itemId);
+
+    if (!item) return res.status(404).json({
+        message: "Item not found in cart",
+        success: false,
+    })
+
+    
+    if (item.quantity == 0) {
+        cart.items = cart.items.filter((cartItem) => cartItem._id != itemId);
+        
+        await cart.save();
+        
+        return res.status(200).json({
+            message: "Item removed from cart",
+            success: true
+        })
+    }
+
+    item.quantity--;
+
+    await cart.save();
+
+    res.status(200).json({
+        message: "Item quantity decreased",
+        success: true,
+        item
     })
 
 }

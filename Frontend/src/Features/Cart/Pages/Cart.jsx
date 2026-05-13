@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import useCart from '../hook/useCart';
 
 const Cart = () => {
-    const { getCartItemsHandler } = useCart();
+    const { getCartItemsHandler, addItemQuantityHandler, subItemQuantityHandler } = useCart();
     const cartItems = useSelector((state) => state.cart.cartItems);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -128,28 +128,25 @@ const Cart = () => {
                                             <div className="flex items-center gap-6">
                                                 <div className="flex items-center gap-3 border border-[#e8e2db] p-2">
                                                     <button
-                                                        disabled
-                                                        className="w-5 h-5 flex items-center justify-center text-[#9a9089] cursor-not-allowed opacity-50"
-                                                        title="Backend functionality coming soon"
+                                                        className="w-5 h-5 flex items-center justify-center text-[#9a9089] opacity-50"
+                                                        onClick={() => { subItemQuantityHandler(item._id) }}
                                                     >
-                                                        −
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M5 11V13H19V11H5Z"></path></svg>
                                                     </button>
                                                     <span className="w-6 text-center text-sm font-medium text-[#1a1612]">
                                                         {item.quantity}
                                                     </span>
                                                     <button
-                                                        disabled
-                                                        className="w-5 h-5 flex items-center justify-center text-[#9a9089] cursor-not-allowed opacity-50"
-                                                        title="Backend functionality coming soon"
+                                                        className="w-5 h-5 flex items-center justify-center text-[#9a9089] opacity-50"
+                                                        onClick={() => { addItemQuantityHandler(item._id) }}
                                                     >
-                                                        +
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"></path></svg>
                                                     </button>
                                                 </div>
 
                                                 {/* Delete Button */}
                                                 <button
-                                                    disabled
-                                                    className="w-5 h-5 flex items-center justify-center text-[#d45454] cursor-not-allowed opacity-50"
+                                                    className="w-5 h-5 flex items-center justify-center text-[#d45454] opacity-50"
                                                     title="Backend functionality coming soon"
                                                 >
                                                     <svg fill="currentColor" viewBox="0 0 24 24">
