@@ -1,5 +1,5 @@
 import express from 'express';
-import { addItemToCart, createProduct, createVariant, deleteVariant, getProduct, getProducts, getSellerProducts, updateProduct } from '../controllers/productController.js';
+import { createProduct, createVariant, deleteVariant, getProduct, getProducts, getSellerProducts, updateProduct } from '../controllers/productController.js';
 import { authSeller, verifyToken } from '../middlewares/authMiddleware.js';
 import multer from 'multer';
 import { addToCartValidator } from '../validation/cartValidation.js';
@@ -24,12 +24,9 @@ ProductRouter.get('/seller', authSeller, getSellerProducts);
 
 ProductRouter.patch('/seller/:productId', authSeller, upload.array('images', 8), updateProduct);
 
-ProductRouter.get('/:productId', getProduct);
-
-ProductRouter.post('/addToCart/:productId/:variantId', verifyToken, addToCartValidator, addItemToCart);
-
 ProductRouter.get('/', getProducts);
 
+ProductRouter.get('/:productId', getProduct);
 
 
 export default ProductRouter;

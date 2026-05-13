@@ -10,6 +10,7 @@ import ProductDetail from './Features/Products/Pages/ProductDetail'
 import SellerProductDetail from './Features/Products/Pages/SellerProductDetail'
 import ResetPassword from './Features/Authentication/Pages/ResetPassword'
 import ForgotPassword from './Features/Authentication/Pages/ForgotPassword'
+import Cart from './Features/Cart/Pages/Cart'
 
 const AppRoutes = () => {
 
@@ -29,6 +30,8 @@ const AppRoutes = () => {
                     <Route path='/product/sellerProducts/:productId' element={<SellerProductDetail />} />
                     <Route path='/product/:productId' element={<ProductDetail />} />
                 </Route>
+
+                <Route path='/cart' element={<Cart />} />
 
             </Routes>
         </BrowserRouter>

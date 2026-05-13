@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import useProduct from "../Hook/useProduct";
 import { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import useCart from "../../Cart/hook/useCart";
 
 const ProductDetail = () => {
     const { ProductHandler } = useProduct();
@@ -12,7 +13,7 @@ const ProductDetail = () => {
     const [mainImage, setMainImage] = useState("");
     const [selectedAttributes, setSelectedAttributes] = useState({});
     const [selectedVariant, setSelectedVariant] = useState(null);
-    const { addItemToCartHandler } = useProduct();
+    const { addItemToCartHandler } = useCart();
 
     useEffect(() => {
         ProductHandler({ productId });
