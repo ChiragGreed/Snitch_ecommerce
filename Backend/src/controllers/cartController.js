@@ -158,19 +158,19 @@ export const subItemQuantity = async (req, res) => {
         success: false,
     })
 
-    
+    item.quantity--;
+
     if (item.quantity == 0) {
         cart.items = cart.items.filter((cartItem) => cartItem._id != itemId);
-        
+
         await cart.save();
-        
+
         return res.status(200).json({
             message: "Item removed from cart",
             success: true
         })
     }
 
-    item.quantity--;
 
     await cart.save();
 
@@ -180,4 +180,27 @@ export const subItemQuantity = async (req, res) => {
         item
     })
 
+}
+
+export const removeItem = async (req, res) => {
+    const userId = req.user;
+    const { itemId } = req.body;
+
+    let cart = await cartModel.findOne({ userId });
+
+    if (!cart) return res.status(404).json({
+        message: "Invalid cart id",
+        success: false,
+    })
+
+    const itemIndex = cart.items.findIndex((i) => i._id == itemId);
+
+    cart.items.splice(itemIndex, 1);
+
+    await cart.save();
+
+    res.status(200).json({
+        message: "Item removed from cart",
+        success: true
+    })
 }

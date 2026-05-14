@@ -26,6 +26,15 @@ const SellerProductsPage = () => {
                 {/* ── HEADER BAR ── */}
                 <header className="sticky top-0 z-30 bg-[#f7f4f0]/80 backdrop-blur-xl border-b border-[#e8e2db]">
                     <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
+                        <button
+                            onClick={() => navigate("/")}
+                            className="group flex items-center gap-2 text-[#1a1612] transition-colors"
+                        >
+                            <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                            </svg>
+                            <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Back</span>
+                        </button>
                         <span className="font-cormorant text-[13px] font-semibold tracking-[0.3em] text-[#1a1612] uppercase">
                             Snitch
                         </span>

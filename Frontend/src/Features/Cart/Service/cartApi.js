@@ -6,7 +6,8 @@ const api = axios.create({
 });
 
 export const addItemToCartApi = async (productId, variantId) => {
-  await api.post(`/add/${productId}/${variantId}`, { quantity: 1 });
+  const response = await api.post(`/add/${productId}/${variantId}`, { quantity: 1 });
+  return response.data;
 }
 
 export const getCartItemsAPi = async () => {
@@ -24,3 +25,6 @@ export const subItemQuantityApi = async (itemId) => {
   const response = await api.post('/subItemQuantity', { itemId });
 }
 
+export const removeItemApi = async (itemId) => {
+  const response = await api.post('/removeItem', { itemId });
+}

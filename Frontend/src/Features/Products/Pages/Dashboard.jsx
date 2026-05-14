@@ -13,7 +13,9 @@ const SORT_OPTIONS = [
 
 const Dashboard = () => {
     const products = useSelector((state) => state.products.AllProducts);
+    const User = useSelector((state) => state.auth.User);
     const { ProductsHandler } = useProduct();
+    const navigate = useNavigate();
 
     const [search, setSearch] = useState('');
     const [sortBy, setSortBy] = useState('newest');
@@ -72,7 +74,7 @@ const Dashboard = () => {
                     <span className="font-cormorant text-[13px] font-semibold tracking-[0.3em] text-[#1a1612] uppercase">
                         Snitch
                     </span>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-6">
                         {/* Search bar */}
                         <div className="relative hidden md:flex items-center">
                             <svg className="absolute left-3 w-3.5 h-3.5 text-[#9a9089]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -98,6 +100,32 @@ const Dashboard = () => {
                                 </button>
                             )}
                         </div>
+
+                        {/* Seller Dashboard Button */}
+                        {User?.role === "isSeller" && (
+                            <button
+                                onClick={() => navigate("/product/sellerProducts/")}
+                                className="group flex items-center gap-2 text-[#1a1612] transition-colors hover:opacity-70"
+                            >
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                                </svg>
+                                <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Seller</span>
+                            </button>
+                        )}
+
+                        {/* Cart Button */}
+
+                            <button
+                                onClick={() => navigate("/cart")}
+                                className="group flex items-center gap-2 text-[#1a1612] transition-colors hover:opacity-70"
+                            >
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4l1-12z" />
+                                </svg>
+                                <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Cart</span>
+                            </button>
+
                     </div>
                 </div>
             </header>
@@ -235,7 +263,7 @@ const Dashboard = () => {
                 {filtered.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {filtered.map((product, idx) => (
-                            <ProductCard  key={idx} product={product} />
+                            <ProductCard key={idx} product={product} />
                         ))}
                     </div>
                 ) : (

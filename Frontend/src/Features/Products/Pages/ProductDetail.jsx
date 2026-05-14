@@ -95,7 +95,15 @@ const ProductDetail = () => {
                     <span className="font-cormorant text-[13px] font-semibold tracking-[0.3em] text-[#1a1612] uppercase">
                         Snitch
                     </span>
-                    <div className="w-10" /> {/* Spacer */}
+                    <button
+                        onClick={() => navigate("/cart")}
+                        className="group flex items-center gap-2 text-[#1a1612] transition-colors hover:opacity-70"
+                    >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4l1-12z" />
+                        </svg>
+                        <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Cart</span>
+                    </button>
                 </div>
             </nav>
 
@@ -282,8 +290,8 @@ const ProductDetail = () => {
                                 <button className={`w-full py-4 text-[#f7f4f0] font-dm text-[12px] font-medium uppercase tracking-[0.2em] 
                                                  rounded-sm transition-all duration-300 active:scale-[0.98] shadow-lg
                                                  ${selectedVariant && selectedVariant.stock > 0
-                                        ? 'bg-[#1a1612] hover:bg-[#2e2620] cursor-pointer'
-                                        : 'bg-[#c0b8b0] cursor-not-allowed'}`}
+                                            ? 'bg-[#1a1612] hover:bg-[#2e2620] cursor-pointer'
+                                            : 'bg-[#c0b8b0] cursor-not-allowed'}`}
                                     disabled={!selectedVariant || selectedVariant.stock === 0}
                                     onClick={() => { addItemToCartHandler(productId, selectedVariant._id) }}
                                 >
@@ -297,6 +305,15 @@ const ProductDetail = () => {
                                     }
                                 </button>
 
+                                <button className={`w-full py-4 border-2 font-dm text-[12px] font-medium uppercase tracking-[0.2em] 
+                                                 rounded-sm transition-all duration-300 active:scale-[0.98]
+                                                 ${selectedVariant && selectedVariant.stock > 0
+                                            ? 'border-[#1a1612] text-[#1a1612] hover:bg-[#f0ebe4] cursor-pointer'
+                                            : 'border-[#c0b8b0] text-[#c0b8b0] cursor-not-allowed'}`}
+                                    disabled={!selectedVariant || selectedVariant.stock === 0}
+                                >
+                                    Buy Now
+                                </button>
                             </div>
                         </div>
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import { addItemToCart, getCartItems, addItemQuantity, subItemQuantity } from '../controllers/cartController.js';
+import { addItemToCart, getCartItems, addItemQuantity, subItemQuantity, removeItem } from '../controllers/cartController.js';
 import { verifyToken } from '../middlewares/authMiddleware.js';
 import { addToCartValidator } from '../validation/cartValidation.js';
 
@@ -12,6 +12,8 @@ cartRouter.post('/add/:productId/:variantId', verifyToken, addToCartValidator, a
 cartRouter.post('/addItemQuantity', verifyToken, addItemQuantity);
 
 cartRouter.post('/subItemQuantity', verifyToken, subItemQuantity);
+
+cartRouter.post('/removeItem', verifyToken, removeItem);
 
 
 export default cartRouter;
