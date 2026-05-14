@@ -7,12 +7,15 @@ import useCart from "../../Cart/hook/useCart";
 const ProductDetail = () => {
     const { ProductHandler } = useProduct();
     const productData = useSelector((state) => state.products.Product);
+    const User = useSelector((state) => state.auth.User);
     const { productId } = useParams();
 
     const navigate = useNavigate();
     const [mainImage, setMainImage] = useState("");
     const [selectedAttributes, setSelectedAttributes] = useState({});
     const [selectedVariant, setSelectedVariant] = useState(null);
+    const [message, setMessage] = useState("");
+    const [messageType, setMessageType] = useState("");
     const { addItemToCartHandler } = useCart();
 
     useEffect(() => {
@@ -26,6 +29,13 @@ const ProductDetail = () => {
             setMainImage(productData.images[0]);
         }
     }, [productData, selectedVariant]);
+
+    useEffect(() => {
+        if (message) {
+            const timer = setTimeout(() => setMessage(""), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [message]);
 
     // Extract unique attribute types and their available values
     const attributeStructure = useMemo(() => {
@@ -95,19 +105,48 @@ const ProductDetail = () => {
                     <span className="font-cormorant text-[13px] font-semibold tracking-[0.3em] text-[#1a1612] uppercase">
                         Snitch
                     </span>
-                    <button
-                        onClick={() => navigate("/cart")}
-                        className="group flex items-center gap-2 text-[#1a1612] transition-colors hover:opacity-70"
-                    >
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4l1-12z" />
-                        </svg>
-                        <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Cart</span>
-                    </button>
+                    <div className="flex items-center gap-4">
+                        {User ? (
+                            <button
+                                onClick={() => navigate("/cart")}
+                                className="group flex items-center gap-2 text-[#1a1612] transition-colors hover:opacity-70"
+                            >
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4l1-12z" />
+                                </svg>
+                                <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Cart</span>
+                            </button>
+                        ) : (
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={() => navigate("/login")}
+                                    className="text-[#1a1612] font-dm text-[11px] uppercase tracking-[0.2em] font-medium hover:opacity-70 transition-colors"
+                                >
+                                    Login
+                                </button>
+                                <button
+                                    onClick={() => navigate("/register")}
+                                    className="px-4 py-2 bg-[#1a1612] text-[#f7f4f0] font-dm text-[11px] uppercase tracking-[0.2em] font-medium rounded-sm hover:bg-[#2e2620] transition-colors"
+                                >
+                                    Sign Up
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </nav>
 
             <main className="max-w-7xl mx-auto px-6 py-12 lg:py-20">
+                {/* ── MESSAGE DISPLAY ── */}
+                {message && (
+                    <div className={`fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-sm shadow-lg font-dm text-[12px] font-medium uppercase tracking-[0.15em] transition-all duration-300
+                        ${messageType === 'error' 
+                            ? 'bg-red-100 text-red-700 border border-red-300' 
+                            : 'bg-green-100 text-green-700 border border-green-300'}`}
+                    >
+                        {message}
+                    </div>
+                )}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
 
                     {/* ── LEFT COLUMN: IMAGERY ── */}
@@ -293,7 +332,23 @@ const ProductDetail = () => {
                                             ? 'bg-[#1a1612] hover:bg-[#2e2620] cursor-pointer'
                                             : 'bg-[#c0b8b0] cursor-not-allowed'}`}
                                     disabled={!selectedVariant || selectedVariant.stock === 0}
-                                    onClick={() => { addItemToCartHandler(productId, selectedVariant._id) }}
+                                    onClick={async () => {
+                                        if (!User) {
+                                            setMessage("Please log in to add items to your cart");
+                                            setMessageType("error");
+                                            return;
+                                        }
+                                        try {
+                                            const result = await addItemToCartHandler(productId, selectedVariant._id);
+                                            if (result) {
+                                                setMessage("Item added to cart successfully!");
+                                                setMessageType("success");
+                                            }
+                                        } catch (error) {
+                                            setMessage("Please log in to add items to your cart");
+                                            setMessageType("error");
+                                        }
+                                    }}
                                 >
                                     {selectedVariant
                                         ? selectedVariant.stock > 0

@@ -114,8 +114,8 @@ const Dashboard = () => {
                             </button>
                         )}
 
-                        {/* Cart Button */}
-
+                        {/* Cart Button or Auth Buttons */}
+                        {User ? (
                             <button
                                 onClick={() => navigate("/cart")}
                                 className="group flex items-center gap-2 text-[#1a1612] transition-colors hover:opacity-70"
@@ -125,6 +125,22 @@ const Dashboard = () => {
                                 </svg>
                                 <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Cart</span>
                             </button>
+                        ) : (
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={() => navigate("/login")}
+                                    className="text-[#1a1612] font-dm text-[11px] uppercase tracking-[0.2em] font-medium hover:opacity-70 transition-colors"
+                                >
+                                    Login
+                                </button>
+                                <button
+                                    onClick={() => navigate("/register")}
+                                    className="px-4 py-2 bg-[#1a1612] text-[#f7f4f0] font-dm text-[11px] uppercase tracking-[0.2em] font-medium rounded-sm hover:bg-[#2e2620] transition-colors"
+                                >
+                                    Sign Up
+                                </button>
+                            </div>
+                        )}
 
                     </div>
                 </div>

@@ -13,26 +13,6 @@ const App = () => {
   const Loading = useSelector((state) => { return state.auth.Loading });
 
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const storedtoken = await protectedRouteHandler();
-      if (!storedtoken) navigate('/login');
-    }
-
-    checkAuth();
-  }, []);
-
-  useEffect(() => {
-    getMeHandler();
-  }, []);
-
-  useEffect(() => {
-    if (Loading === false && User === null) {
-      navigate('/login');
-    }
-  }, [User, Loading])
-
-
   if (Loading == true) return <div>Loading...</div>
 
 
