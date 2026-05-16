@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import useProduct from "../Hook/useProduct";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import SellerProtected from "../../Authentication/components/sellerProtected";
 import SellerProductCard from "../components/SellerProductCard";
 
 const SellerProductsPage = () => {
@@ -20,7 +19,7 @@ const SellerProductsPage = () => {
 
 
     return (
-        <SellerProtected>
+   
             <div className="font-dm min-h-screen bg-[#f7f4f0] antialiased">
 
                 {/* ── HEADER BAR ── */}
@@ -160,7 +159,7 @@ const SellerProductsPage = () => {
                     </div>
                 </footer>
             </div>
-        </SellerProtected>
+      
     );
 };
 

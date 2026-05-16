@@ -22,3 +22,9 @@ export const addToCartValidator = [
 
     validationHandler
 ]
+
+export const cartItemValidator = [
+    param('itemId')
+        .isMongoId(true)
+        .withMessage("itemId must be a Mongoose Id"),
+]

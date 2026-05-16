@@ -67,6 +67,7 @@ const useAuth = () => {
         try {
             const userData = await getMeApi();
             dispatch(setLoading(true));
+            console.log(userData.user);
             dispatch(setUser(userData.user));
         } catch (error) {
             return error;

@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { addItemQuantityApi, addItemToCartApi, getCartItemsAPi, removeItemApi, subItemQuantityApi } from "../Service/cartApi.js";
-import { setcartItems } from "../State/cartSlice.js";
+import { setcartItems, addItemQuantity, subItemQuantity, removeCartItem } from "../State/cartSlice.js";
 
 const useCart = () => {
 
@@ -18,19 +18,20 @@ const useCart = () => {
     }
 
     const addItemQuantityHandler = async (itemId) => {
-
         const res = await addItemQuantityApi(itemId);
-        console.log(res);
+        dispatch(addItemQuantity(itemId));
+        return res;
     }
 
     const subItemQuantityHandler = async (itemId) => {
-
         const res = await subItemQuantityApi(itemId);
-        return res
+        dispatch(subItemQuantity(itemId));
+        return res;
     }
 
     const removeItemHandler = async (itemId) => {
         const res = await removeItemApi(itemId);
+        dispatch(removeCartItem(itemId));
         return res;
     }
 

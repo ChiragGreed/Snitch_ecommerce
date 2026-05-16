@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../Hook/useAuth';
 
-const SellerProtected = ({ children }) => {
+const ProtectedRoute = ({ children }) => {
 
     const navigate = useNavigate();
     const { getMeHandler } = useAuth();
@@ -24,10 +24,6 @@ const SellerProtected = ({ children }) => {
             return;
         }
 
-        if (User && User.role !== "isSeller") {
-            navigate("/");
-            return;
-        }
     }, [User, Loading]);
 
     return (
@@ -37,4 +33,4 @@ const SellerProtected = ({ children }) => {
     )
 }
 
-export default SellerProtected
+export default ProtectedRoute

@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import useProduct from "../Hook/useProduct";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import SellerProtected from "../../Authentication/components/sellerProtected";
 
 const CreateProduct = () => {
     const navigate = useNavigate();
@@ -103,7 +102,6 @@ const CreateProduct = () => {
     }, [imagePreviews]);
 
     return (
-        <SellerProtected>
             <div className="font-dm min-h-screen bg-[#f7f4f0] antialiased">
                 {/* ── HEADER BAR ── */}
                 <header className="sticky top-0 z-30 bg-[#f7f4f0]/80 backdrop-blur-xl border-b border-[#e8e2db]">
@@ -395,7 +393,6 @@ const CreateProduct = () => {
                     </div>
                 )}
             </div>
-        </SellerProtected>
     );
 };
 

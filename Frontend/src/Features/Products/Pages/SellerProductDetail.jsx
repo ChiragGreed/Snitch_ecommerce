@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react'
 import useProduct from '../Hook/useProduct';
 import { useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import SellerProtected from '../../Authentication/components/sellerProtected';
 
 const SellerProductDetail = () => {
     const { ProductHandler, updateProductHandler, createVariantHandler, deleteVariantHandler } = useProduct();
@@ -215,7 +214,7 @@ const SellerProductDetail = () => {
     };
 
     return (
-        <SellerProtected>
+
             <div className="min-h-screen bg-[#f7f4f0] font-dm text-[#1a1612] antialiased">
                 {/* ── HEADER ── */}
                 <header className="sticky top-0 z-40 bg-[#f7f4f0]/90 backdrop-blur-md border-b border-[#e8e2db]">
@@ -667,7 +666,6 @@ const SellerProductDetail = () => {
 
                 <div className="h-24" />
             </div>
-        </SellerProtected>
     );
 };
 

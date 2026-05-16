@@ -22,6 +22,7 @@ const ProductDetail = () => {
         ProductHandler({ productId });
     }, [productId]);
 
+
     useEffect(() => {
         if (selectedVariant?.images?.length > 0) {
             setMainImage(selectedVariant.images[0]);
@@ -90,52 +91,18 @@ const ProductDetail = () => {
 
     return (
         <div className="min-h-screen bg-[#f7f4f0] font-dm antialiased">
-            {/* ── NAVIGATION ── */}
-            <nav className="sticky top-0 z-40 bg-[#f7f4f0]/80 backdrop-blur-xl border-b border-[#e8e2db]">
-                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="group flex items-center gap-2 text-[#1a1612] transition-colors"
-                    >
-                        <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                        </svg>
-                        <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Back</span>
-                    </button>
-                    <span className="font-cormorant text-[13px] font-semibold tracking-[0.3em] text-[#1a1612] uppercase">
-                        Snitch
-                    </span>
-                    <div className="flex items-center gap-4">
-                        {User ? (
-                            <button
-                                onClick={() => navigate("/cart")}
-                                className="group flex items-center gap-2 text-[#1a1612] transition-colors hover:opacity-70"
-                            >
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4l1-12z" />
-                                </svg>
-                                <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Cart</span>
-                            </button>
-                        ) : (
-                            <div className="flex items-center gap-3">
-                                <button
-                                    onClick={() => navigate("/login")}
-                                    className="text-[#1a1612] font-dm text-[11px] uppercase tracking-[0.2em] font-medium hover:opacity-70 transition-colors"
-                                >
-                                    Login
-                                </button>
-                                <button
-                                    onClick={() => navigate("/register")}
-                                    className="px-4 py-2 bg-[#1a1612] text-[#f7f4f0] font-dm text-[11px] uppercase tracking-[0.2em] font-medium rounded-sm hover:bg-[#2e2620] transition-colors"
-                                >
-                                    Sign Up
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                </div>
+            {/* Back Button Navigation */}
+            <nav className="max-w-7xl mx-auto px-6 pt-8 pb-2 flex items-center">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="flex items-center gap-2 text-[#1a1612] hover:text-[#8a6e52] text-sm font-medium"
+                >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Back
+                </button>
             </nav>
-
             <main className="max-w-7xl mx-auto px-6 py-12 lg:py-20">
                 {/* ── MESSAGE DISPLAY ── */}
                 {message && (

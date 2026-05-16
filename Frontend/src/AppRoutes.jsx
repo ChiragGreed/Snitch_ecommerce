@@ -11,6 +11,9 @@ import SellerProductDetail from './Features/Products/Pages/SellerProductDetail'
 import ResetPassword from './Features/Authentication/Pages/ResetPassword'
 import ForgotPassword from './Features/Authentication/Pages/ForgotPassword'
 import Cart from './Features/Cart/Pages/Cart'
+import ProtectedRoute from './Features/Authentication/components/ProtectedRoute'
+import SellerProtected from './Features/Authentication/components/SellerProtected'
+import AppLayout from './AppLayout'
 
 const AppRoutes = () => {
 
@@ -18,20 +21,25 @@ const AppRoutes = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path='/' element={<App />} />
+                <Route element={<AppLayout />}>
+                    <Route path='/' element={<App />} />
+                    <Route path='/product/:productId' element={<ProductDetail />} />
+                    <Route path='/cart' element={<ProtectedRoute> <Cart /> </ProtectedRoute>} />
+                </Route>
+
+
+                
                 <Route path='/register' element={<Register />} />
                 <Route path='/login' element={<Login />} />
                 <Route path='/forgotPassword' element={<ForgotPassword />} />
                 <Route path='/resetPassword' element={<ResetPassword />} />
 
                 <Route path='/product' >
-                    <Route path='/product/createProduct' element={<CreateProduct />} />
-                    <Route path='/product/sellerProducts' element={<SellerProducts />} />
-                    <Route path='/product/sellerProducts/:productId' element={<SellerProductDetail />} />
-                    <Route path='/product/:productId' element={<ProductDetail />} />
+                    <Route path='/product/createProduct' element={<SellerProtected> <CreateProduct /> </SellerProtected>} />
+                    <Route path='/product/sellerProducts' element={<SellerProtected> <SellerProducts /> </SellerProtected>} />
+                    <Route path='/product/sellerProducts/:productId' element={<SellerProtected> <SellerProductDetail /> </SellerProtected>} />
                 </Route>
 
-                <Route path='/cart' element={<Cart />} />
 
             </Routes>
         </BrowserRouter>

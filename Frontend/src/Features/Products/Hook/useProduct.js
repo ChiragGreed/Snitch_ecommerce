@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import { createProductApi, createVariantApi, deleteVariantApi, getProductApi, getProductsApi, getSellerProductsApi, updateProductApi } from "../Service/productApi"
 import { setAllProducts, setProduct } from "../State/productSlice.js"
 import { setSellerProducts } from "../State/productSlice.js"
+import { setLoading } from "../../Authentication/State/authSlice.js";
 
 const useProduct = () => {
 
@@ -51,6 +52,7 @@ const useProduct = () => {
     const ProductsHandler = async () => {
         const ProductsData = await getProductsApi();
         dispatch(setAllProducts(ProductsData.products));
+        dispatch(setLoading(false));
     }
 
     const ProductHandler = async ({ productId }) => {
