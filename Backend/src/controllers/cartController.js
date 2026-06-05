@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { variantStock } from "../dao/variantStock.dao.js";
 import cartModel from "../models/cartModel.js";
 import productModel from "../models/productModel.js";
@@ -84,19 +85,85 @@ export const addItemToCart = async (req, res) => {
 export const getCartItems = async (req, res) => {
     const userId = req.user;
 
-    const cart = await cartModel.findOne({ userId: userId }).populate('items.productId');
+    const cart = await cartModel.aggregate([
+
+        {
+            '$match': {
+                'userId': new mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            '$unwind': {
+                'path': '$items'
+            }
+        }, {
+            '$lookup': {
+                'from': 'products',
+                'localField': 'items.productId',
+                'foreignField': '_id',
+                'as': 'items.productId'
+            }
+        }, {
+            '$unwind': {
+                'path': '$items.productId'
+            }
+        }, {
+            '$unwind': {
+                'path': '$items.productId.variants'
+            }
+        }, {
+            '$match': {
+                '$expr': {
+                    '$eq': [
+                        '$items.variantId', '$items.productId.variants._id'
+                    ]
+                }
+            }
+        }, {
+            '$addFields': {
+                'itemTotalPrice': {
+                    'amount': {
+                        '$multiply': [
+                            '$items.quantity', '$items.productId.variants.price.amount'
+                        ]
+                    },
+                    'currency': '$items.productId.variants.price.currency'
+                }
+            }
+        }, {
+            '$group': {
+                '_id': '$_id',
+                'finalAmount': {
+                    '$sum': '$itemTotalPrice.amount'
+                },
+                'finalCurrency': {
+                    '$first': '$items.productId.price.currency'
+                },
+                'items': {
+                    '$push': '$items'
+                }
+            }
+        }, {
+            '$project': {
+                'totalPrice': {
+                    'amount': '$finalAmount',
+                    'currency': '$finalCurrency'
+                },
+                'items': '$items'
+            }
+        }
+    ]);
 
     if (!cart) return res.status(200).json({
         message: "No cart items found",
         success: true
     })
 
-    console.log(cart);
 
     res.status(200).json({
         message: "Fetched cart items",
         success: true,
-        cart
+        cart: cart[0]
     })
 
 }

@@ -4,11 +4,20 @@ import { createSlice, current } from "@reduxjs/toolkit";
 const cartSlice = createSlice({
     name: 'cart',
     initialState: {
-        cartItems: []
+        cartItems: [],
+        subtotal: 0,
+        total: 0, // Add taxes/shipping if needed
     },
     reducers: {
         setcartItems: (state, action) => {
             state.cartItems = action.payload;
+        },
+
+        setSubtotal: (state, action) => {
+            state.subtotal = action.payload;
+        },
+        settotal: (state, action) => {
+            state.total = action.payload;
         },
         addItemQuantity: (state, action) => {
             state.cartItems.items.forEach((item) => {
@@ -18,10 +27,42 @@ const cartSlice = createSlice({
                 }
             })
         },
+        addSubtotal: (state, action) => {
+            state.cartItems.items.forEach((item) => {
+                if (item._id == action.payload) {
+                    state.subtotal += item.productId.variants.price.amount;
+                    return;
+                }
+            })
+        },
+        addtotal: (state, action) => {
+            state.cartItems.items.forEach((item) => {
+                if (item._id == action.payload) {
+                    state.total += item.productId.variants.price.amount;
+                    return;
+                }
+            })
+        },
         subItemQuantity: (state, action) => {
             state.cartItems.items.forEach((item) => {
                 if (item._id == action.payload) {
                     item.quantity -= 1;
+                    return;
+                }
+            })
+        },
+        subtractSubtotal: (state, action) => {
+            state.cartItems.items.forEach((item) => {
+                if (item._id == action.payload) {
+                    state.subtotal -= item.productId.variants.price.amount;
+                    return;
+                }
+            })
+        },
+        subtractTotal: (state, action) => {
+            state.cartItems.items.forEach((item) => {
+                if (item._id == action.payload) {
+                    state.total -= item.productId.variants.price.amount;
                     return;
                 }
             })
@@ -37,5 +78,5 @@ const cartSlice = createSlice({
     }
 })
 
-export const { setcartItems, addItemQuantity, subItemQuantity, removeCartItem } = cartSlice.actions;
+export const { setcartItems, setSubtotal, settotal, addItemQuantity, addtotal, addSubtotal, subItemQuantity, subtractSubtotal, subtractTotal, removeCartItem } = cartSlice.actions;
 export default cartSlice.reducer;

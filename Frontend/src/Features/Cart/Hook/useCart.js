@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { addItemQuantityApi, addItemToCartApi, getCartItemsAPi, removeItemApi, subItemQuantityApi } from "../Service/cartApi.js";
-import { setcartItems, addItemQuantity, subItemQuantity, removeCartItem } from "../State/cartSlice.js";
+import { setcartItems, setSubtotal, settotal, addItemQuantity, subItemQuantity, subtractSubtotal, subtractTotal, removeCartItem, addSubtotal, addtotal } from "../State/cartSlice.js";
 
 const useCart = () => {
 
@@ -13,19 +13,24 @@ const useCart = () => {
 
     const getCartItemsHandler = async () => {
         const cartItemsData = await getCartItemsAPi();
+        dispatch(setSubtotal(cartItemsData.cart.totalPrice.amount));
+        dispatch(settotal(cartItemsData.cart.totalPrice.amount));
         dispatch(setcartItems(cartItemsData.cart));
-
     }
 
     const addItemQuantityHandler = async (itemId) => {
         const res = await addItemQuantityApi(itemId);
         dispatch(addItemQuantity(itemId));
+        dispatch(addSubtotal(itemId));
+        dispatch(addtotal(itemId));
         return res;
     }
 
     const subItemQuantityHandler = async (itemId) => {
         const res = await subItemQuantityApi(itemId);
         dispatch(subItemQuantity(itemId));
+        dispatch(subtractSubtotal(itemId));
+        dispatch(subtractTotal(itemId));
         return res;
     }
 
