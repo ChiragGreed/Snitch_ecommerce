@@ -3,13 +3,16 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import useCart from '../hook/useCart';
+import { useRazorpay, RazorpayOrderOptions } from "react-razorpay";
 
 const Cart = () => {
-    const { getCartItemsHandler, addItemQuantityHandler, subItemQuantityHandler, removeItemHandler } = useCart();
+    const { getCartItemsHandler, addItemQuantityHandler, subItemQuantityHandler, removeItemHandler, createPaymentOrderHandler } = useCart();
+    const User = useSelector((state) => state.auth.User);
     const cartItems = useSelector((state) => state.cart.cartItems);
     const total = useSelector((state) => state.cart.total);
     const subtotal = useSelector((state) => state.cart.subtotal);
-    const [loading, setLoading] = useState(false);    
+    const currency = useSelector((state) => state.cart.currency);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
 
@@ -18,6 +21,39 @@ const Cart = () => {
         const fetchCartItems = async () => { await getCartItemsHandler(); }
         fetchCartItems();
     }, []);
+
+
+    const { error, isLoading, Razorpay } = useRazorpay();
+
+    const handlePayment = async () => {
+
+        const order = await createPaymentOrderHandler(total, currency);
+
+        const options = {
+            key: "rzp_test_Syi7RF2PcKamje",
+            amount: total, // Amount in paise
+            currency: currency,
+            name: "Snitch E-commerce",
+            description: "Test Transaction",
+            order_id: order.id, // Generate order_id on server
+            handler: (response) => {
+                console.log(response);
+                alert("Payment Successful!");
+            },
+            prefill: {
+                name: User?.fullname,
+                email: User?.email,
+                contact: User?.contact || "",
+            },
+            theme: {
+                color: "#F37254",
+            },
+        };
+
+        const razorpayInstance = new Razorpay(options);
+        razorpayInstance.open();
+    };
+
 
 
     if (loading) {
@@ -30,7 +66,6 @@ const Cart = () => {
             </div>
         );
     }
-
 
     return (
         <div className="min-h-screen bg-[#f7f4f0] font-dm antialiased">
@@ -164,9 +199,14 @@ const Cart = () => {
                                 <div className="space-y-4 pb-6 border-b border-[#e8e2db]">
                                     <div className="flex justify-between items-center">
                                         <span className="text-[11px] uppercase tracking-[0.1em] text-[#9a9089]">Subtotal</span>
-                                        <span className="font-cormorant text-lg font-semibold text-[#1a1612]">
-                                            ₹{subtotal?.toFixed(2)}
-                                        </span>
+                                        <div className='flex gap-2'>
+                                            <span className="font-cormorant text-md font-semibold text-[#1a1612]">
+                                                {currency}
+                                            </span>
+                                            <span className="font-cormorant text-4xl font-semibold text-[#1a1612]">
+                                                {subtotal}
+                                            </span>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -174,9 +214,14 @@ const Cart = () => {
                                 {/* Total */}
                                 <div className="flex justify-between items-center mb-8">
                                     <span className="text-sm uppercase tracking-[0.15em] font-medium text-[#1a1612]">Total</span>
-                                    <span className="font-cormorant text-3xl font-semibold text-[#1a1612]">
-                                        ₹{total?.toFixed(2)}
-                                    </span>
+                                    <div className='flex gap-2'>
+                                        <span className="font-cormorant text-md font-semibold text-[#1a1612]">
+                                            {currency}
+                                        </span>
+                                        <span className="font-cormorant text-4xl font-semibold text-[#1a1612]">
+                                            {subtotal}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 {/* Promo Code */}
@@ -201,6 +246,7 @@ const Cart = () => {
                                 {/* Checkout Button */}
                                 <button
                                     className="w-full py-4 bg-[#1a1612] text-[#f7f4f0] font-medium uppercase tracking-[0.2em] text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                                    onClick={() => { handlePayment() }}
                                 >
                                     Go to Checkout
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

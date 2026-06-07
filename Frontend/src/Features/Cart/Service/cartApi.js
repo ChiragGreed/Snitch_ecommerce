@@ -28,3 +28,8 @@ export const subItemQuantityApi = async (itemId) => {
 export const removeItemApi = async (itemId) => {
   const response = await api.post('/removeItem', { itemId });
 }
+
+export const createPaymentOrderApi = async (amount, currency) => {
+  const response = await api.post('/order/payment', { amount, currency });
+  return response.data;
+} 

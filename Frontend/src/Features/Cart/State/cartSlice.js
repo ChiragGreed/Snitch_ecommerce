@@ -7,6 +7,7 @@ const cartSlice = createSlice({
         cartItems: [],
         subtotal: 0,
         total: 0, // Add taxes/shipping if needed
+        currency: 'INR'
     },
     reducers: {
         setcartItems: (state, action) => {
@@ -18,6 +19,9 @@ const cartSlice = createSlice({
         },
         settotal: (state, action) => {
             state.total = action.payload;
+        },
+        setCurrency: (state, action) => {
+            state.currency = action.payload;
         },
         addItemQuantity: (state, action) => {
             state.cartItems.items.forEach((item) => {
@@ -78,5 +82,5 @@ const cartSlice = createSlice({
     }
 })
 
-export const { setcartItems, setSubtotal, settotal, addItemQuantity, addtotal, addSubtotal, subItemQuantity, subtractSubtotal, subtractTotal, removeCartItem } = cartSlice.actions;
+export const { setcartItems, setSubtotal, settotal, setCurrency, addItemQuantity, addtotal, addSubtotal, subItemQuantity, subtractSubtotal, subtractTotal, removeCartItem } = cartSlice.actions;
 export default cartSlice.reducer;

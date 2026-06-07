@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { variantStock } from "../dao/variantStock.dao.js";
 import cartModel from "../models/cartModel.js";
 import productModel from "../models/productModel.js";
+import razorpay from "../services/paymentService.js";
 
 
 export const addItemToCart = async (req, res) => {
@@ -270,4 +271,30 @@ export const removeItem = async (req, res) => {
         message: "Item removed from cart",
         success: true
     })
+}
+
+export const createPaymentOrder = async (req, res) => {
+
+    const { amount, currency = 'INR' } = req.body;
+
+    const options = {
+        amount: amount * 100,
+        currency: currency
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    res.send(order);
+
+    const newPayment = new Payment.create({
+        orderId: orderId,
+        amount: order.amount,
+        currency: order.currency,
+        status: 'pending'
+    })
+
+    res.status(200).json({
+        message: "Payment pending"
+    })
+
 }
