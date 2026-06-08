@@ -29,7 +29,12 @@ export const removeItemApi = async (itemId) => {
   const response = await api.post('/removeItem', { itemId });
 }
 
-export const createPaymentOrderApi = async (amount, currency) => {
+export const createOrderPaymentApi = async (amount, currency) => {
   const response = await api.post('/order/payment', { amount, currency });
+  return response.data;
+}
+
+export const verifyPaymentApi = async ({ orderId, paymentId, paymentSignature }) => {
+  const response = await api.post('/order/payment/verify', { razorpay_order_id: orderId, razorpay_payment_id: paymentId, razorpay_signature: paymentSignature });
   return response.data;
 } 

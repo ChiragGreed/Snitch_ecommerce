@@ -3,7 +3,82 @@ import { variantStock } from "../dao/variantStock.dao.js";
 import cartModel from "../models/cartModel.js";
 import productModel from "../models/productModel.js";
 import razorpay from "../services/paymentService.js";
+import paymentModel from "../models/paymentModel.js";
+import { validatePaymentVerification } from '../../node_modules/razorpay/dist/utils/razorpay-utils.js'
+import { Config } from "../config/config.js";
 
+async function getCart(userId) {
+    const cart = await cartModel.aggregate([
+
+        {
+            '$match': {
+                'userId': new mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            '$unwind': {
+                'path': '$items'
+            }
+        }, {
+            '$lookup': {
+                'from': 'products',
+                'localField': 'items.productId',
+                'foreignField': '_id',
+                'as': 'items.productId'
+            }
+        }, {
+            '$unwind': {
+                'path': '$items.productId'
+            }
+        }, {
+            '$unwind': {
+                'path': '$items.productId.variants'
+            }
+        }, {
+            '$match': {
+                '$expr': {
+                    '$eq': [
+                        '$items.variantId', '$items.productId.variants._id'
+                    ]
+                }
+            }
+        }, {
+            '$addFields': {
+                'itemTotalPrice': {
+                    'amount': {
+                        '$multiply': [
+                            '$items.quantity', '$items.productId.variants.price.amount'
+                        ]
+                    },
+                    'currency': '$items.productId.variants.price.currency'
+                }
+            }
+        }, {
+            '$group': {
+                '_id': '$_id',
+                'finalAmount': {
+                    '$sum': '$itemTotalPrice.amount'
+                },
+                'finalCurrency': {
+                    '$first': '$items.productId.price.currency'
+                },
+                'items': {
+                    '$push': '$items'
+                }
+            }
+        }, {
+            '$project': {
+                'totalPrice': {
+                    'amount': '$finalAmount',
+                    'currency': '$finalCurrency'
+                },
+                'items': '$items'
+            }
+        }
+    ]);
+
+    return cart;
+}
 
 export const addItemToCart = async (req, res) => {
 
@@ -86,79 +161,15 @@ export const addItemToCart = async (req, res) => {
 export const getCartItems = async (req, res) => {
     const userId = req.user;
 
-    const cart = await cartModel.aggregate([
-
-        {
-            '$match': {
-                'userId': new mongoose.Types.ObjectId(userId)
-            }
-        },
-        {
-            '$unwind': {
-                'path': '$items'
-            }
-        }, {
-            '$lookup': {
-                'from': 'products',
-                'localField': 'items.productId',
-                'foreignField': '_id',
-                'as': 'items.productId'
-            }
-        }, {
-            '$unwind': {
-                'path': '$items.productId'
-            }
-        }, {
-            '$unwind': {
-                'path': '$items.productId.variants'
-            }
-        }, {
-            '$match': {
-                '$expr': {
-                    '$eq': [
-                        '$items.variantId', '$items.productId.variants._id'
-                    ]
-                }
-            }
-        }, {
-            '$addFields': {
-                'itemTotalPrice': {
-                    'amount': {
-                        '$multiply': [
-                            '$items.quantity', '$items.productId.variants.price.amount'
-                        ]
-                    },
-                    'currency': '$items.productId.variants.price.currency'
-                }
-            }
-        }, {
-            '$group': {
-                '_id': '$_id',
-                'finalAmount': {
-                    '$sum': '$itemTotalPrice.amount'
-                },
-                'finalCurrency': {
-                    '$first': '$items.productId.price.currency'
-                },
-                'items': {
-                    '$push': '$items'
-                }
-            }
-        }, {
-            '$project': {
-                'totalPrice': {
-                    'amount': '$finalAmount',
-                    'currency': '$finalCurrency'
-                },
-                'items': '$items'
-            }
-        }
-    ]);
+    const cart = await getCart(userId);
 
     if (!cart) return res.status(200).json({
         message: "No cart items found",
-        success: true
+        success: true,
+        error: "No cart items found"
     })
+
+    console.log(cart);
 
 
     res.status(200).json({
@@ -178,6 +189,7 @@ export const addItemQuantity = async (req, res) => {
     if (!cart) return res.status(404).json({
         message: "Invalid cart id",
         success: false,
+        error: "Invalid cart id"
     })
 
     const item = cart.items.find((item) => item._id == itemId);
@@ -185,6 +197,7 @@ export const addItemQuantity = async (req, res) => {
     if (!item) return res.status(404).json({
         message: "Item not found in cart",
         success: false,
+        error: "Cart item not found"
     })
 
     const stock = await variantStock(item.productId.toString(), item.variantId.toString());
@@ -192,7 +205,8 @@ export const addItemQuantity = async (req, res) => {
 
     if (item.quantity >= stock) return res.status(400).json({
         message: "Insuffecient stock for required item quantity",
-        success: false
+        success: false,
+        error: "Insuffecient stock"
     })
 
     item.quantity++;
@@ -217,6 +231,7 @@ export const subItemQuantity = async (req, res) => {
     if (!cart) return res.status(404).json({
         message: "Invalid cart id",
         success: false,
+        error: "Invalid cart id"
     })
 
     const item = cart.items.find((item) => item._id == itemId);
@@ -224,6 +239,7 @@ export const subItemQuantity = async (req, res) => {
     if (!item) return res.status(404).json({
         message: "Item not found in cart",
         success: false,
+        error: "cart item not found"
     })
 
     item.quantity--;
@@ -259,6 +275,7 @@ export const removeItem = async (req, res) => {
     if (!cart) return res.status(404).json({
         message: "Invalid cart id",
         success: false,
+        error: "Iinvalid cart id"
     })
 
     const itemIndex = cart.items.findIndex((i) => i._id == itemId);
@@ -275,7 +292,16 @@ export const removeItem = async (req, res) => {
 
 export const createPaymentOrder = async (req, res) => {
 
+    const userId = req.user;
+    const cart = await getCart(userId);
+
     const { amount, currency = 'INR' } = req.body;
+
+    if (!amount || !currency) return res.status(400).json({
+        message: "Amount or Currency not provided",
+        success: false,
+        error: "Amount or Currency missing"
+    })
 
     const options = {
         amount: amount * 100,
@@ -284,17 +310,63 @@ export const createPaymentOrder = async (req, res) => {
 
     const order = await razorpay.orders.create(options);
 
-    res.send(order);
-
-    const newPayment = new Payment.create({
-        orderId: orderId,
-        amount: order.amount,
-        currency: order.currency,
-        status: 'pending'
-    })
+    const payment = await paymentModel.create({ userId, cartId: cart[0]._id, order: { razorpay_order_id: order.id }, price: cart[0].totalPrice });
 
     res.status(200).json({
-        message: "Payment pending"
+        message: "Payment pending",
+        success: true,
+        order
     })
 
 }
+
+export const verifyPayment = async (req, res) => {
+    const userId = req.user;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+
+    console.log(req.body);
+
+    if (!razorpay_order_id) return res.status(400).json({
+        message: "Order_id not provided",
+        success: false,
+        error: "razorpay_order_id not provided"
+    })
+
+
+    if (!razorpay_payment_id || !razorpay_signature) {
+
+        return res.status(200).json({
+            message: "Payment failed",
+            success: false,
+        })
+    }
+
+    const result = validatePaymentVerification({ "order_id": razorpay_order_id, "payment_id": razorpay_payment_id }, razorpay_signature, Config.RAZORPAY_KEY_SECRET);
+
+    if (!result) {
+        payment.status = 'failed';
+        res.status(400).send('Invalid signature');
+    }
+
+    const payment = await paymentModel.findOne({ userId, status: 'pending', order: { razorpay_order_id } });
+
+    if (!payment) return res.status(404).json({
+        message: "Payment request do not exist",
+        success: false,
+        error: "Payment request do not exist"
+    })
+    
+    payment.order.razorpay_payment_id = razorpay_payment_id;
+    payment.order.razorpay_signature = razorpay_signature;
+    payment.status = 'success';
+
+    await payment.save();
+
+    res.status(200).json({
+        message: "Payment Verified successfully",
+        success: true
+    })
+}
+
+

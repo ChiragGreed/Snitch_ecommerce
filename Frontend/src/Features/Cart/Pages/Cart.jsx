@@ -6,7 +6,7 @@ import useCart from '../hook/useCart';
 import { useRazorpay, RazorpayOrderOptions } from "react-razorpay";
 
 const Cart = () => {
-    const { getCartItemsHandler, addItemQuantityHandler, subItemQuantityHandler, removeItemHandler, createPaymentOrderHandler } = useCart();
+    const { getCartItemsHandler, addItemQuantityHandler, subItemQuantityHandler, removeItemHandler, createOrderPaymentHandler, verifyPaymentHandler } = useCart();
     const User = useSelector((state) => state.auth.User);
     const cartItems = useSelector((state) => state.cart.cartItems);
     const total = useSelector((state) => state.cart.total);
@@ -14,7 +14,6 @@ const Cart = () => {
     const currency = useSelector((state) => state.cart.currency);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-
 
     // Fetch cart items on mount
     useEffect(() => {
@@ -27,18 +26,23 @@ const Cart = () => {
 
     const handlePayment = async () => {
 
-        const order = await createPaymentOrderHandler(total, currency);
+        const order = await createOrderPaymentHandler(total / 100, currency);
 
         const options = {
             key: "rzp_test_Syi7RF2PcKamje",
-            amount: total, // Amount in paise
+            amount: total * 100,
             currency: currency,
             name: "Snitch E-commerce",
             description: "Test Transaction",
             order_id: order.id, // Generate order_id on server
-            handler: (response) => {
+            handler: async (response) => {
+
+                const isPaymentVerified = await verifyPaymentHandler({ orderId: order.id, paymentId: response.razorpay_payment_id, paymentSignature: response.razorpay_signature });
+
+                if (isPaymentVerified) navigate('/payment/success');
+                else console.log("Payment verification failed");
+
                 console.log(response);
-                alert("Payment Successful!");
             },
             prefill: {
                 name: User?.fullname,
@@ -52,6 +56,8 @@ const Cart = () => {
 
         const razorpayInstance = new Razorpay(options);
         razorpayInstance.open();
+
+
     };
 
 

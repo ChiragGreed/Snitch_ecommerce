@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { addItemQuantityApi, addItemToCartApi, getCartItemsAPi, removeItemApi, subItemQuantityApi, createPaymentOrderApi } from "../Service/cartApi.js";
+import { addItemQuantityApi, addItemToCartApi, getCartItemsAPi, removeItemApi, subItemQuantityApi, createOrderPaymentApi, verifyPaymentApi } from "../Service/cartApi.js";
 import { setcartItems, setSubtotal, settotal, addItemQuantity, subItemQuantity, subtractSubtotal, subtractTotal, removeCartItem, addSubtotal, addtotal, setCurrency } from "../State/cartSlice.js";
 
 const useCart = () => {
@@ -13,6 +13,7 @@ const useCart = () => {
 
     const getCartItemsHandler = async () => {
         const cartItemsData = await getCartItemsAPi();
+        console.log(cartItemsData);
         dispatch(setSubtotal(cartItemsData.cart.totalPrice.amount));
         dispatch(settotal(cartItemsData.cart.totalPrice.amount));
         dispatch(setCurrency(cartItemsData.cart.totalPrice.currency));
@@ -42,13 +43,18 @@ const useCart = () => {
     }
 
 
-    const createPaymentOrderHandler = async (amount, currency) => {
-        const res = await createPaymentOrderApi(amount, currency);
+    const createOrderPaymentHandler = async (amount, currency) => {
+        const res = await createOrderPaymentApi(amount, currency);
         console.log(res);
-        return res;
+        return res.order;
     }
 
-    return { addItemToCartHandler, getCartItemsHandler, addItemQuantityHandler, subItemQuantityHandler, removeItemHandler, createPaymentOrderHandler }
+    const verifyPaymentHandler = async ({ orderId, paymentId, paymentSignature }) => {
+        const res = await verifyPaymentApi({ orderId, paymentId, paymentSignature });
+        return res.success;
+    }
+
+    return { addItemToCartHandler, getCartItemsHandler, addItemQuantityHandler, subItemQuantityHandler, removeItemHandler, createOrderPaymentHandler, verifyPaymentHandler }
 }
 
 export default useCart;
