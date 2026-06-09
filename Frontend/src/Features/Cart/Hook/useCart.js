@@ -50,8 +50,12 @@ const useCart = () => {
     }
 
     const verifyPaymentHandler = async ({ orderId, paymentId, paymentSignature }) => {
-        const res = await verifyPaymentApi({ orderId, paymentId, paymentSignature });
-        return res.success;
+        try {
+            const res = await verifyPaymentApi({ orderId, paymentId, paymentSignature });
+            return res.success;
+        } catch (err) {
+            return false;
+        }
     }
 
     return { addItemToCartHandler, getCartItemsHandler, addItemQuantityHandler, subItemQuantityHandler, removeItemHandler, createOrderPaymentHandler, verifyPaymentHandler }

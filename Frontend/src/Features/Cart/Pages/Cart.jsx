@@ -26,11 +26,11 @@ const Cart = () => {
 
     const handlePayment = async () => {
 
-        const order = await createOrderPaymentHandler(total / 100, currency);
+        const order = await createOrderPaymentHandler(total, currency);
 
         const options = {
             key: "rzp_test_Syi7RF2PcKamje",
-            amount: total * 100,
+            amount: total,
             currency: currency,
             name: "Snitch E-commerce",
             description: "Test Transaction",
@@ -39,10 +39,9 @@ const Cart = () => {
 
                 const isPaymentVerified = await verifyPaymentHandler({ orderId: order.id, paymentId: response.razorpay_payment_id, paymentSignature: response.razorpay_signature });
 
-                if (isPaymentVerified) navigate('/payment/success');
+                if (isPaymentVerified) navigate('/myOrders?orderId=' + order.id);
                 else console.log("Payment verification failed");
 
-                console.log(response);
             },
             prefill: {
                 name: User?.fullname,
@@ -55,6 +54,11 @@ const Cart = () => {
         };
 
         const razorpayInstance = new Razorpay(options);
+
+        razorpayInstance.on('payment.failed', async (error) => {
+            await verifyPaymentHandler({ orderId: order.id, paymentId: error.error.metadata.payment_id, paymentSignature: -1 });
+        })
+
         razorpayInstance.open();
 
 

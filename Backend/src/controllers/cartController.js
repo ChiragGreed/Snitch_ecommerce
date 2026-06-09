@@ -333,22 +333,6 @@ export const verifyPayment = async (req, res) => {
         error: "razorpay_order_id not provided"
     })
 
-
-    if (!razorpay_payment_id || !razorpay_signature) {
-
-        return res.status(200).json({
-            message: "Payment failed",
-            success: false,
-        })
-    }
-
-    const result = validatePaymentVerification({ "order_id": razorpay_order_id, "payment_id": razorpay_payment_id }, razorpay_signature, Config.RAZORPAY_KEY_SECRET);
-
-    if (!result) {
-        payment.status = 'failed';
-        res.status(400).send('Invalid signature');
-    }
-
     const payment = await paymentModel.findOne({ userId, status: 'pending', order: { razorpay_order_id } });
 
     if (!payment) return res.status(404).json({
@@ -356,7 +340,28 @@ export const verifyPayment = async (req, res) => {
         success: false,
         error: "Payment request do not exist"
     })
-    
+
+    if (!razorpay_payment_id || !razorpay_signature) {
+
+        return res.status(200).json({
+            message: "Payment failed",
+            success: false,
+            error: "razorpay_payment_id or razorpay_signature not found"
+        })
+    }
+
+    const result = validatePaymentVerification({ "order_id": razorpay_order_id, "payment_id": razorpay_payment_id }, razorpay_signature, Config.RAZORPAY_KEY_SECRET);
+
+    if (!result) {
+        payment.status = 'failed';
+        await payment.save();
+
+        return res.status(400).json({
+            message: 'Invalid signature',
+            success: false,
+        });
+    }
+
     payment.order.razorpay_payment_id = razorpay_payment_id;
     payment.order.razorpay_signature = razorpay_signature;
     payment.status = 'success';
