@@ -38,7 +38,7 @@ const Cart = () => {
             handler: async (response) => {
 
                 const isPaymentVerified = await verifyPaymentHandler({ orderId: order.id, paymentId: response.razorpay_payment_id, paymentSignature: response.razorpay_signature });
-
+                console.log(isPaymentVerified);
                 if (isPaymentVerified) navigate('/myOrders?orderId=' + order.id);
                 else console.log("Payment verification failed");
 

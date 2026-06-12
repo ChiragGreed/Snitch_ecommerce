@@ -333,7 +333,8 @@ export const verifyPayment = async (req, res) => {
         error: "razorpay_order_id not provided"
     })
 
-    const payment = await paymentModel.findOne({ userId, status: 'pending', order: { razorpay_order_id } });
+    const payment = await paymentModel.findOne({ userId, status: { $in: ['pending', 'failed'] }, "order.razorpay_order_id": razorpay_order_id });
+
 
     if (!payment) return res.status(404).json({
         message: "Payment request do not exist",
@@ -364,7 +365,7 @@ export const verifyPayment = async (req, res) => {
 
     payment.order.razorpay_payment_id = razorpay_payment_id;
     payment.order.razorpay_signature = razorpay_signature;
-    payment.status = 'success';
+    payment.status = 'paid';
 
     await payment.save();
 
