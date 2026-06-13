@@ -8,6 +8,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import ProductRouter from './routes/productRouter.js';
 import cartRouter from './routes/cartRouter.js';
+import orderRouter from './routes/orderRouter.js';
 
 
 const app = express();
@@ -37,6 +38,7 @@ passport.use(new GoogleStrategy({
 app.use('/api/auth', authRouter);
 app.use('/api/products', ProductRouter);
 app.use('/api/cart', cartRouter);
+app.use('/api/order', orderRouter);
 
 
 export default app;

@@ -14,6 +14,7 @@ import Cart from './Features/Cart/Pages/Cart'
 import ProtectedRoute from './Features/Authentication/components/ProtectedRoute'
 import SellerProtected from './Features/Authentication/components/SellerProtected'
 import AppLayout from './AppLayout'
+import MyOrders from './Features/Orders/Pages/MyOrders'
 
 const AppRoutes = () => {
 
@@ -25,10 +26,11 @@ const AppRoutes = () => {
                     <Route path='/' element={<App />} />
                     <Route path='/product/:productId' element={<ProductDetail />} />
                     <Route path='/cart' element={<ProtectedRoute> <Cart /> </ProtectedRoute>} />
+                    <Route path='/myOrders?orderId' element={<ProtectedRoute> <MyOrders /> </ProtectedRoute>} />
                 </Route>
 
 
-                
+
                 <Route path='/register' element={<Register />} />
                 <Route path='/login' element={<Login />} />
                 <Route path='/forgotPassword' element={<ForgotPassword />} />

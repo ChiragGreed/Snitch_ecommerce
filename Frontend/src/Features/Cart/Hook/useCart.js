@@ -52,7 +52,7 @@ const useCart = () => {
     const verifyPaymentHandler = async ({ orderId, paymentId, paymentSignature }) => {
         try {
             const res = await verifyPaymentApi({ orderId, paymentId, paymentSignature });
-            return res.success;
+            return res;
         } catch (err) {
             return false;
         }

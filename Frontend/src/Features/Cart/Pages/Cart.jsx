@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import useCart from '../hook/useCart';
 import { useRazorpay, RazorpayOrderOptions } from "react-razorpay";
+import useOrder from '../../Orders/Hooks/useOrder';
 
 const Cart = () => {
     const { getCartItemsHandler, addItemQuantityHandler, subItemQuantityHandler, removeItemHandler, createOrderPaymentHandler, verifyPaymentHandler } = useCart();
+    const { createOrderHandler } = useOrder();
     const User = useSelector((state) => state.auth.User);
     const cartItems = useSelector((state) => state.cart.cartItems);
     const total = useSelector((state) => state.cart.total);
@@ -38,9 +40,12 @@ const Cart = () => {
             handler: async (response) => {
 
                 const isPaymentVerified = await verifyPaymentHandler({ orderId: order.id, paymentId: response.razorpay_payment_id, paymentSignature: response.razorpay_signature });
-                console.log(isPaymentVerified);
-                if (isPaymentVerified) navigate('/myOrders?orderId=' + order.id);
-                else console.log("Payment verification failed");
+
+                if (isPaymentVerified.success) {
+                    console.log(isPaymentVerified.cartId);
+                    await createOrderHandler(isPaymentVerified.cartId);
+                    navigate('/myOrders?orderId=' + order.id);
+                }
 
             },
             prefill: {
@@ -102,7 +107,7 @@ const Cart = () => {
                     <div className="text-center py-20">
                         <p className="text-[#9a9089] text-sm tracking-[0.1em] mb-6">YOUR CART IS EMPTY</p>
                         <button
-                            onClick={() => navigate('/products')}
+                            onClick={() => navigate('/')}
                             className="px-8 py-3 bg-[#1a1612] text-[#f7f4f0] text-[11px] uppercase tracking-[0.2em] font-medium transition-all hover:opacity-80"
                         >
                             Continue Shopping

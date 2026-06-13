@@ -325,8 +325,6 @@ export const verifyPayment = async (req, res) => {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
 
 
-    console.log(req.body);
-
     if (!razorpay_order_id) return res.status(400).json({
         message: "Order_id not provided",
         success: false,
@@ -371,7 +369,8 @@ export const verifyPayment = async (req, res) => {
 
     res.status(200).json({
         message: "Payment Verified successfully",
-        success: true
+        success: true,
+        cartId: payment.cartId
     })
 }
 
