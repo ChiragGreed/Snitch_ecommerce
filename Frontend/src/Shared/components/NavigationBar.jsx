@@ -55,17 +55,28 @@ const NavigationBar = () => {
                             </button>
                         )}
 
-                        {/* Cart Button or Auth Buttons */}
+                        {/* Cart and Orders Buttons or Auth Buttons */}
                         {User ? (
-                            <button
-                                onClick={() => navigate("/cart")}
-                                className="group flex items-center gap-2 text-[#1a1612] transition-colors hover:opacity-70"
-                            >
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4l1-12z" />
-                                </svg>
-                                <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Cart</span>
-                            </button>
+                            <>
+                                <button
+                                    onClick={() => navigate("/myOrders")}
+                                    className="group flex items-center gap-2 text-[#1a1612] transition-colors hover:opacity-70"
+                                >
+                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                    </svg>
+                                    <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Orders</span>
+                                </button>
+                                <button
+                                    onClick={() => navigate("/cart")}
+                                    className="group flex items-center gap-2 text-[#1a1612] transition-colors hover:opacity-70"
+                                >
+                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4l1-12z" />
+                                    </svg>
+                                    <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Cart</span>
+                                </button>
+                            </>
                         ) : (
                             <div className="flex items-center gap-3">
                                 <button

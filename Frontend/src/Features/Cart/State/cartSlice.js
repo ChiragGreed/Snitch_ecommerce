@@ -4,7 +4,7 @@ import { createSlice, current } from "@reduxjs/toolkit";
 const cartSlice = createSlice({
     name: 'cart',
     initialState: {
-        cartItems: [],
+        cartItems: null,
         subtotal: 0,
         total: 0, // Add taxes/shipping if needed
         currency: 'INR'

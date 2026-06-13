@@ -27,6 +27,29 @@ export const createOrder = async (req, res) => {
     res.status(201).json({
         message: "Order placed successfully",
         success: true,
+        order
     })
+
+}
+
+export const getOrder = async (req, res) => {
+    const userId = req.user;
+
+    const order = await orderModel.find({ userId })
+        .populate('items.productId', 'title images price variants')
+        .sort({ _id: -1 });
+
+    if (!order || order.length === 0) return res.status(404).json({
+        message: "Order not exist",
+        success: false,
+        error: "No order found"
+    })
+
+    res.status(200).json({
+        message: "Fetched order details",
+        success: true,
+        order
+    })
+
 
 }

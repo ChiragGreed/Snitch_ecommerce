@@ -42,9 +42,8 @@ const Cart = () => {
                 const isPaymentVerified = await verifyPaymentHandler({ orderId: order.id, paymentId: response.razorpay_payment_id, paymentSignature: response.razorpay_signature });
 
                 if (isPaymentVerified.success) {
-                    console.log(isPaymentVerified.cartId);
                     await createOrderHandler(isPaymentVerified.cartId);
-                    navigate('/myOrders?orderId=' + order.id);
+                    navigate('/myOrders');
                 }
 
             },
@@ -67,6 +66,7 @@ const Cart = () => {
         razorpayInstance.open();
 
 
+
     };
 
 
@@ -87,7 +87,7 @@ const Cart = () => {
             {/* Back Button Navigation */}
             <nav className="max-w-7xl mx-auto px-6 pt-8 pb-2 flex items-center">
                 <button
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate('/')}
                     className="flex items-center gap-2 text-[#1a1612] hover:text-[#8a6e52] text-sm font-medium"
                 >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
