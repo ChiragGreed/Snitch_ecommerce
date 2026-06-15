@@ -8,8 +8,8 @@ const api = axios.create({
     },
 })
 
-export const registerApi = async ({ fullname, email, contact, password }) => {
-    const response = await api.post('/register', { fullname, email, contact, password });
+export const registerApi = async ({ fullname, email, contact, password, role }) => {
+    const response = await api.post('/register', { fullname, email, contact, password, role });
     return response.data;
 }
 

@@ -108,7 +108,7 @@ const MyOrders = () => {
             {/* ── Back Navigation ── */}
             <nav className="max-w-7xl mx-auto px-6 pt-8 pb-2 flex items-center">
                 <button
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate('/')}
                     className="flex items-center gap-2 text-[#1a1612] hover:text-[#8a6e52] text-sm font-medium transition-colors duration-200 cursor-pointer"
                 >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -6,9 +6,9 @@ const useAuth = () => {
 
     const dispatch = useDispatch();
 
-    const registerHandler = async ({ fullname, email, contact, password }) => {
+    const registerHandler = async ({ fullname, email, contact, password, role }) => {
         try {
-            const userData = await registerApi({ fullname, email, contact, password });
+            const userData = await registerApi({ fullname: fullname.trim(), email: email.trim().toLowerCase(), contact: contact.trim(), password: password.trim(), role });
             dispatch(setUser(userData.user));
             dispatch(setLoading(true));
         } catch (error) {
@@ -25,8 +25,10 @@ const useAuth = () => {
             const userData = await loginApi({ email, password });
             dispatch(setUser(userData.user));
             dispatch(setLoading(true));
+            return true;
         } catch (error) {
             console.error("Login Error: ", error);
+            return false;
         }
         finally {
             dispatch(setLoading(false));
