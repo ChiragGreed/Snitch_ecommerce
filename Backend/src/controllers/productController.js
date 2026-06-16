@@ -48,9 +48,14 @@ export const createVariant = async (req, res) => {
         price = JSON.parse(price);
     }
 
-    const imagesUrl = await Promise.all(req.files.map((image) => { return ImagetKitUpload(image.buffer, image.originalname) }))
 
-    const images = [...imagesUrl];
+    if (req.files.length > 0) {
+        const imagesUrl = await Promise.all(req.files.map((image) => { return ImagetKitUpload(image.buffer, image.originalname) }))
+        var images = [...imagesUrl];
+    }
+    else {
+        var images = product.images;
+    }
 
     product.variants.push({ attribute, images, price, stock });
 

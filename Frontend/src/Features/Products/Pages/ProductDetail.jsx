@@ -107,8 +107,8 @@ const ProductDetail = () => {
                 {/* ── MESSAGE DISPLAY ── */}
                 {message && (
                     <div className={`fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-sm shadow-lg font-dm text-[12px] font-medium uppercase tracking-[0.15em] transition-all duration-300
-                        ${messageType === 'error' 
-                            ? 'bg-red-100 text-red-700 border border-red-300' 
+                        ${messageType === 'error'
+                            ? 'bg-red-100 text-red-700 border border-red-300'
                             : 'bg-green-100 text-green-700 border border-green-300'}`}
                     >
                         {message}
@@ -232,7 +232,11 @@ const ProductDetail = () => {
                                                                             : 'ring-1 ring-[#e8e2db] hover:ring-[#1a1612]'
                                                                         }`}
                                                                 >
-                                                                    {imageUrl ? (
+                                                                    {attrName === "Size" ? (
+                                                                        <div className="flex bg-[#2E2620] items-center justify-center w-full h-full">
+                                                                            <h1 className="text-lg font-semibold">{value}</h1>
+                                                                        </div>
+                                                                    ) : imageUrl ? (
                                                                         <img
                                                                             src={imageUrl}
                                                                             alt={value}
@@ -245,6 +249,10 @@ const ProductDetail = () => {
                                                                             </svg>
                                                                         </div>
                                                                     )}
+                                                            
+                                                                    
+                                                            
+                                                            
                                                                 </button>
                                                                 <span className="text-[11px] uppercase tracking-wider font-medium text-[#1a1612] text-center">
                                                                     {value}
@@ -296,8 +304,8 @@ const ProductDetail = () => {
                                 <button className={`w-full py-4 text-[#f7f4f0] font-dm text-[12px] font-medium uppercase tracking-[0.2em] 
                                                  rounded-sm transition-all duration-300 active:scale-[0.98] shadow-lg
                                                  ${selectedVariant && selectedVariant.stock > 0
-                                            ? 'bg-[#1a1612] hover:bg-[#2e2620] cursor-pointer'
-                                            : 'bg-[#c0b8b0] cursor-not-allowed'}`}
+                                        ? 'bg-[#1a1612] hover:bg-[#2e2620] cursor-pointer'
+                                        : 'bg-[#c0b8b0] cursor-not-allowed'}`}
                                     disabled={!selectedVariant || selectedVariant.stock === 0}
                                     onClick={async () => {
                                         if (!User) {
@@ -330,8 +338,8 @@ const ProductDetail = () => {
                                 <button className={`w-full py-4 border-2 font-dm text-[12px] font-medium uppercase tracking-[0.2em] 
                                                  rounded-sm transition-all duration-300 active:scale-[0.98]
                                                  ${selectedVariant && selectedVariant.stock > 0
-                                            ? 'border-[#1a1612] text-[#1a1612] hover:bg-[#f0ebe4] cursor-pointer'
-                                            : 'border-[#c0b8b0] text-[#c0b8b0] cursor-not-allowed'}`}
+                                        ? 'border-[#1a1612] text-[#1a1612] hover:bg-[#f0ebe4] cursor-pointer'
+                                        : 'border-[#c0b8b0] text-[#c0b8b0] cursor-not-allowed'}`}
                                     disabled={!selectedVariant || selectedVariant.stock === 0}
                                 >
                                     Buy Now
