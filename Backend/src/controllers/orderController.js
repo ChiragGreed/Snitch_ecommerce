@@ -1,5 +1,7 @@
+import { variantStock } from "../dao/variantStock.dao.js";
 import cartModel from "../models/cartModel.js";
 import orderModel from "../models/orderModel.js";
+import productModel from "../models/productModel.js";
 
 export const createOrder = async (req, res) => {
 
@@ -20,9 +22,26 @@ export const createOrder = async (req, res) => {
         error: "Cart not found from cartId: " + cartId
     })
 
+
     const order = await orderModel.create({ userId, items: cart.items, status: 'placed' });
 
+    // Reduce product stock 
+
+    cart.items.forEach(async (item) => {
+
+        let quantity = item.quantity;
+
+        const product = await productModel.findById(item.productId);
+        let variant = product.variants.find(variant => variant._id.toString() == item.variantId).stock - quantity;
+
+        product.variants.find(variant => variant._id.toString() == item.variantId).stock = variant;
+        await product.save();
+    })
+
+    // Remove cart
+
     await cartModel.deleteOne({ _id: cartId });
+
 
     res.status(201).json({
         message: "Order placed successfully",
