@@ -1,20 +1,47 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../../Features/Authentication/Hook/useAuth';
+import ProfileSidebar from './ProfileSidebar';
 
 const NavigationBar = () => {
 
     const User = useSelector((state) => state.auth.User);
     const [search, setSearch] = useState('');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const navigate = useNavigate();
+    const { getMeHandler } = useAuth();
+
+    useEffect(() => {
+        if (isSidebarOpen && User) {
+            getMeHandler();
+        }
+    }, [isSidebarOpen]);
 
     return (
         <>
+            <ProfileSidebar 
+                isOpen={isSidebarOpen} 
+                onClose={() => setIsSidebarOpen(false)} 
+                user={User} 
+            />
             <nav className="sticky top-0 z-30 bg-[#f7f4f0]/80 backdrop-blur-xl border-b border-[#e8e2db]">
                 <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-                    <span className="font-cormorant text-[13px] font-semibold tracking-[0.3em] text-[#1a1612] uppercase">
-                        Snitch
-                    </span>
+                    <div className="flex items-center gap-4">
+                        {User && (
+                            <button 
+                                onClick={() => setIsSidebarOpen(true)}
+                                className="flex items-center justify-center w-8 h-8 rounded-full bg-[#e8e2db] hover:bg-[#d1ccc6] transition-colors"
+                            >
+                                <svg className="w-5 h-5 text-[#1a1612]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </button>
+                        )}
+                        <span className="font-cormorant text-[13px] font-semibold tracking-[0.3em] text-[#1a1612] uppercase">
+                            Snitch
+                        </span>
+                    </div>
                     <div className="flex items-center gap-6">
                         {/* Search bar */}
                         <div className="relative hidden md:flex items-center">
@@ -51,7 +78,7 @@ const NavigationBar = () => {
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                                 </svg>
-                                <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Seller</span>
+                                <span className="hidden sm:inline text-[11px] uppercase tracking-[0.2em] font-medium">Seller</span>
                             </button>
                         )}
 
@@ -65,7 +92,7 @@ const NavigationBar = () => {
                                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                     </svg>
-                                    <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Orders</span>
+                                    <span className="hidden sm:inline text-[11px] uppercase tracking-[0.2em] font-medium">Orders</span>
                                 </button>
                                 <button
                                     onClick={() => navigate("/cart")}
@@ -74,7 +101,7 @@ const NavigationBar = () => {
                                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4l1-12z" />
                                     </svg>
-                                    <span className="text-[11px] uppercase tracking-[0.2em] font-medium">Cart</span>
+                                    <span className="hidden sm:inline text-[11px] uppercase tracking-[0.2em] font-medium">Cart</span>
                                 </button>
                             </>
                         ) : (

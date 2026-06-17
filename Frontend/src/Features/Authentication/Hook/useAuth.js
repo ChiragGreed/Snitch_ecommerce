@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { registerApi, loginApi, getMeApi, protectedRouteApi, resetPasswordApi, forgotPasswordApi, checkSessionIdApi } from "../Service/authApi.js"
+import { registerApi, loginApi, getMeApi, protectedRouteApi, resetPasswordApi, forgotPasswordApi, checkSessionIdApi, logoutApi } from "../Service/authApi.js"
 import { setLoading, setUser } from "../State/authSlice.js";
 
 const useAuth = () => {
@@ -33,6 +33,15 @@ const useAuth = () => {
         finally {
             dispatch(setLoading(false));
         }
+    }
+
+    const logoutHandler = async () => {
+
+        const userData = await logoutApi();
+        dispatch(setUser(null));
+        dispatch(setLoading(true));
+        dispatch(setLoading(false));
+
     }
 
     const protectedRouteHandler = async () => {
@@ -90,7 +99,7 @@ const useAuth = () => {
         }
     }
 
-    return { registerHandler, loginHandler, forgotPasswordHandler, resetPasswordHandler, getMeHandler, checkSessionIdHandler, protectedRouteHandler }
+    return { registerHandler, loginHandler, logoutHandler, forgotPasswordHandler, resetPasswordHandler, getMeHandler, checkSessionIdHandler, protectedRouteHandler }
 }
 
 export default useAuth

@@ -73,7 +73,7 @@ const Dashboard = () => {
                 {/* ── HERO BANNER ── */}
                 <div className="absolute left-5 right-5 top-16.5 lg:left-0 lg:right-0 h-[400px] lg:h-[500px] mb-16 overflow-hidden group">
                     <img
-                        src="/snitch_hero.png"
+                        src="/Hero_image.png"
                         alt="New Collection"
                         className="w-full h-full object-cover transition-transform duration-[2s] scale-105 group-hover:scale-100"
                     />

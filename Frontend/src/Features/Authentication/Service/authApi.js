@@ -18,6 +18,11 @@ export const loginApi = async ({ email, password }) => {
     return response.data;
 }
 
+export const logoutApi = async () => {
+    const response = await api.get('/logout');
+    return response.data;
+}
+
 export const getMeApi = async () => {
     const response = await api.get('/getMe');
     return response.data;
