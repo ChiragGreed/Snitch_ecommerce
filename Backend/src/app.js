@@ -9,13 +9,21 @@ import morgan from 'morgan';
 import ProductRouter from './routes/productRouter.js';
 import cartRouter from './routes/cartRouter.js';
 import orderRouter from './routes/orderRouter.js';
+import publicRouter from './routes/publicRouter.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 
 const app = express();
 app.use(express.json());
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const index = path.join(__dirname, '../', 'public/dist');
 
 app.use(morgan("dev"));
+app.use(express.static(index))
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -39,6 +47,9 @@ app.use('/api/auth', authRouter);
 app.use('/api/products', ProductRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/order', orderRouter);
+
+app.use('/', publicRouter);
+
 
 
 export default app;

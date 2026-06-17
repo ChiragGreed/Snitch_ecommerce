@@ -13,7 +13,6 @@ const useCart = () => {
 
     const getCartItemsHandler = async () => {
         const cartItemsData = await getCartItemsAPi();
-        console.log(cartItemsData);
         dispatch(setSubtotal(cartItemsData.cart.totalPrice.amount));
         dispatch(settotal(cartItemsData.cart.totalPrice.amount));
         dispatch(setCurrency(cartItemsData.cart.totalPrice.currency));
@@ -45,7 +44,6 @@ const useCart = () => {
 
     const createOrderPaymentHandler = async (amount, currency) => {
         const res = await createOrderPaymentApi(amount, currency);
-        console.log(res);
         return res.order;
     }
 
