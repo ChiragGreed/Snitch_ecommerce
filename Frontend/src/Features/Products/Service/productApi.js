@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:6060/api/products',
+  baseURL: 'https://snitch-ecommerce.onrender.com/api/products',
   withCredentials: true,
 });
 

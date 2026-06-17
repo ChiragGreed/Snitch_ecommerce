@@ -119,7 +119,7 @@ export const googleAuth = async (req, res) => {
 
     tokenGeneration(user, res);
 
-    res.redirect('http://localhost:5173/');
+    res.redirect('https://snitch-ecommerce.onrender.com/');
 
 }
 
@@ -133,7 +133,7 @@ export const forgotPassword = async (req, res) => {
 
     res.cookie("sessionId", sessionId);
 
-    const redirectUserApi = `http://localhost:5173/resetPassword/`;
+    const redirectUserApi = `https://snitch-ecommerce.onrender.com/resetPassword/`;
 
     const subject = 'Request to Reset Password';
     const html = `<!DOCTYPE html>

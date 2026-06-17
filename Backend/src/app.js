@@ -26,7 +26,7 @@ app.use(morgan("dev"));
 app.use(express.static(index))
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'http://localhost:5173' || 'https://snitch-ecommerce.onrender.com',
     credentials: true
 }));
 
@@ -37,7 +37,7 @@ app.use(passport.initialize());
 passport.use(new GoogleStrategy({
     clientID: Config.GOOGLE_CLIENT_ID,
     clientSecret: Config.GOOGLE_CLIENT_SECRET,
-    callbackURL: 'http://localhost:6060/api/auth/google/callback',
+    callbackURL: 'https://snitch-ecommerce.onrender.com/api/auth/google/callback',
 }, (_, __, profile, done) => {
     return done(null, profile);
 }))

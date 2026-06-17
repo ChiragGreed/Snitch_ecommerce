@@ -3,7 +3,7 @@ import { publicRoute } from '../controllers/publicController.js';
 
 const publicRouter = express.Router();
 
-publicRouter.get('', publicRoute);
+publicRouter.get('*name', publicRoute);
 
 
 export default publicRouter
