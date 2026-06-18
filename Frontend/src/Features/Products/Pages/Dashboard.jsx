@@ -96,7 +96,7 @@ const Dashboard = () => {
 
                 {/* ── CATEGORY BAR ── */}
                 <div className="flex items-center gap-4 mb-8 overflow-x-auto pb-4 no-scrollbar">
-                    {['All Pieces', 'New Arrivals', 'Essentials', 'Outerwear', 'Suits & Tailoring', 'Accessories'].map((cat, i) => (
+                    {['All Pieces', 'New Arrivals', 'Essentials', 'Shirts', 'Suits & Tailoring', 'Accessories'].map((cat, i) => (
                         <button
                             key={cat}
                             className={`whitespace-nowrap px-6 py-2.5 rounded-full font-dm text-[11px] uppercase tracking-[0.12em] transition-all duration-300

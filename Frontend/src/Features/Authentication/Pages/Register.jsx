@@ -242,7 +242,7 @@ const Register = () => {
 
             {/* Google */}
             <a
-              href="http://localhost:6060/api/auth/google"
+              href="https://snitch-ecommerce.onrender.com/api/auth/google"
               className="flex items-center justify-center gap-2.5 w-full px-5 py-[13px] mb-4
                          bg-white border border-[#e0d9d2] rounded text-[13px] font-medium
                          text-[#1a1612] tracking-[0.02em] no-underline
