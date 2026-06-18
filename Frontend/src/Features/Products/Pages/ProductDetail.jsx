@@ -119,7 +119,7 @@ const ProductDetail = () => {
                     {/* ── LEFT COLUMN: IMAGERY ── */}
                     <div className="lg:col-span-7 space-y-8">
                         {/* Main Image Display */}
-                        <div className="relative aspect-[4/5] bg-white overflow-hidden group">
+                        <div className="relative max-h-[125vh] max-w-[70vw] bg-white overflow-hidden group">
                             {mainImage ? (
                                 <img
                                     src={mainImage}

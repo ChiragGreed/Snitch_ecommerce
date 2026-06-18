@@ -21,8 +21,9 @@ const Dashboard = () => {
     const [sortBy, setSortBy] = useState('newest');
     const [sortOpen, setSortOpen] = useState(false);
     const [hasImages, setHasImages] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState('All Pieces');
 
-    
+
 
 
     // ── Derived: filter + sort ──
@@ -44,6 +45,60 @@ const Dashboard = () => {
             list = list.filter((p) => p?.images?.length > 0);
         }
 
+        // category filter (frontend keyword mapping only)
+        if (selectedCategory && selectedCategory !== 'All Pieces') {
+            if (selectedCategory === 'New Arrivals') {
+                const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+                const now = Date.now();
+                list = list.filter((p) => {
+                    try {
+                        const ts = parseInt(p._id?.substring(0, 8), 16) * 1000;
+                        return now - ts <= THIRTY_DAYS;
+                    } catch (e) {
+                        return false;
+                    }
+                });
+            } else {
+                const keywordsByCategory = {
+                    'Essentials': ['essential', 'essentials', 'basic', 'basics'],
+                    'Shirts': ['shirt', 'shirts', 't-shirt', 'blouse'],
+                    'Suits & Tailoring': ['suit', 'suits', 'tailor', 'tailoring', 'coat', 'woven'],
+                    'Accessories': ['accessory', 'accessories', 'belt', 'hat', 'scarf', 'bag', 'wallet', 'water'],
+                    // fallback will use category name itself
+                };
+
+                const keywords = keywordsByCategory[selectedCategory] || [selectedCategory.toLowerCase()];
+
+                list = list.filter((p) => {
+                    const titleDesc = ((p?.title || '') + ' ' + (p?.description || '')).toLowerCase();
+
+                    // check title/description
+                    if (keywords.some((k) => titleDesc.includes(k))) return true;
+
+                    // check explicit category field
+                    if (p?.category && keywords.some((k) => (p.category || '').toLowerCase().includes(k))) return true;
+
+                    // check tags array
+                    if (Array.isArray(p?.tags) && p.tags.some((t) => keywords.some((k) => (t || '').toLowerCase().includes(k)))) return true;
+
+                    // check variant attributes (values)
+                    if (Array.isArray(p?.variants)) {
+                        for (const v of p.variants) {
+                            const attr = v.attribute || v.attributes || {};
+                            try {
+                                const values = Object.values(attr || {}).map((x) => String(x).toLowerCase());
+                                if (values.some((val) => keywords.some((k) => val.includes(k)))) return true;
+                            } catch (e) {
+                                // ignore
+                            }
+                        }
+                    }
+
+                    return false;
+                });
+            }
+        }
+
         // sort
         switch (sortBy) {
             case 'price_asc':
@@ -60,7 +115,7 @@ const Dashboard = () => {
         }
 
         return list;
-    }, [products, search, sortBy, hasImages]);
+    }, [products, search, sortBy, hasImages, selectedCategory]);
 
 
 
@@ -96,11 +151,12 @@ const Dashboard = () => {
 
                 {/* ── CATEGORY BAR ── */}
                 <div className="flex items-center gap-4 mb-8 overflow-x-auto pb-4 no-scrollbar">
-                    {['All Pieces', 'New Arrivals', 'Essentials', 'Shirts', 'Suits & Tailoring', 'Accessories'].map((cat, i) => (
+                    {['All Pieces', 'New Arrivals', 'Essentials', 'Shirts', 'Suits & Tailoring', 'Accessories'].map((cat) => (
                         <button
                             key={cat}
+                            onClick={() => setSelectedCategory(cat)}
                             className={`whitespace-nowrap px-6 py-2.5 rounded-full font-dm text-[11px] uppercase tracking-[0.12em] transition-all duration-300
-                                       ${i === 0
+                                       ${selectedCategory === cat
                                     ? 'bg-[#1a1612] text-white shadow-md'
                                     : 'bg-white border border-[#e8e2db] text-[#9a9089] hover:border-[#8a6e52] hover:text-[#1a1612]'}`}
                         >
@@ -146,9 +202,9 @@ const Dashboard = () => {
                         </button>
 
                         {/* Clear filters */}
-                        {(search || hasImages) && (
+                        {(search || hasImages || (selectedCategory && selectedCategory !== 'All Pieces')) && (
                             <button
-                                onClick={() => { setSearch(''); setHasImages(false); }}
+                                onClick={() => { setSearch(''); setHasImages(false); setSelectedCategory('All Pieces'); }}
                                 className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-sm cursor-pointer
                                            font-dm text-[10px] uppercase tracking-[0.12em]
                                            text-[#8a6e52] border border-[rgba(138,110,82,0.3)]
