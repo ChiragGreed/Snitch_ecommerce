@@ -119,10 +119,6 @@ Snitch-Ecommerce
 
 ## 📸 Screenshots
 
-(Add screenshots of your application here)
-
-Examples:
-
 * Homepage
 * <img width="1086" height="1913" alt="screenshot_1782235701994" src="https://github.com/user-attachments/assets/13cb8312-c0ea-4df3-a65a-c8a6c060022e" />
 
