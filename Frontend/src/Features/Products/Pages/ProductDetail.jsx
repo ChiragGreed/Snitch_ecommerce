@@ -38,6 +38,28 @@ const ProductDetail = () => {
         }
     }, [message]);
 
+    const images = useMemo(() => {
+        return selectedVariant?.images?.length > 0 
+            ? selectedVariant.images 
+            : (productData?.images || []);
+    }, [selectedVariant, productData]);
+
+    const currentIndex = useMemo(() => {
+        return images.indexOf(mainImage);
+    }, [images, mainImage]);
+
+    const handlePrevImage = () => {
+        if (images.length <= 1) return;
+        const nextIndex = (currentIndex - 1 + images.length) % images.length;
+        setMainImage(images[nextIndex]);
+    };
+
+    const handleNextImage = () => {
+        if (images.length <= 1) return;
+        const nextIndex = (currentIndex + 1) % images.length;
+        setMainImage(images[nextIndex]);
+    };
+
     // Extract unique attribute types and their available values
     const attributeStructure = useMemo(() => {
         if (!productData?.variants?.length) return {};
@@ -128,6 +150,29 @@ const ProductDetail = () => {
                                 />
                             ) : (
                                 <div className="w-full h-full bg-[#f0ebe4] animate-pulse" />
+                            )}
+                            {/* Previous and Next buttons */}
+                            {images.length > 1 && (
+                                <>
+                                    <button
+                                        onClick={handlePrevImage}
+                                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-black active:bg-black active:text-white p-2 rounded-full border border-black shadow-md z-10 transition-all cursor-pointer opacity-0 group-hover:opacity-100 focus:opacity-100 flex items-center justify-center"
+                                        aria-label="Previous image"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                            <path d="M7.82843 10.9999H20V12.9999H7.82843L13.1924 18.3638L11.7782 19.778L4 11.9999L11.7782 4.22168L13.1924 5.63589L7.82843 10.9999Z"></path>
+                                        </svg>
+                                    </button>
+                                    <button
+                                        onClick={handleNextImage}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-black active:bg-black active:text-white p-2 rounded-full border border-black shadow-md z-10 transition-all cursor-pointer opacity-0 group-hover:opacity-100 focus:opacity-100 flex items-center justify-center"
+                                        aria-label="Next image"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                            <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+                                        </svg>
+                                    </button>
+                                </>
                             )}
                             {/* Zoom/Expand indicator (Decorative) */}
                             <div className="absolute bottom-6 right-6 p-3 bg-white/10 backdrop-blur-md rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
@@ -341,6 +386,10 @@ const ProductDetail = () => {
                                         ? 'border-[#1a1612] text-[#1a1612] hover:bg-[#f0ebe4] cursor-pointer'
                                         : 'border-[#c0b8b0] text-[#c0b8b0] cursor-not-allowed'}`}
                                     disabled={!selectedVariant || selectedVariant.stock === 0}
+                                    onClick={() => {
+                                        setMessage("Buy Now is currently unavailable. Please add the item to your bag.");
+                                        setMessageType("error");
+                                    }}
                                 >
                                     Buy Now
                                 </button>
