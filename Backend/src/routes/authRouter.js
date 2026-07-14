@@ -1,7 +1,7 @@
 import express from 'express';
+import passport from 'passport'
 import { forgotPassword, getMe, googleAuth, login, logout, protectedRoute, register, resetPassword, sessionProtectedRoute } from '../controllers/authController.js';
 import { loginValidator, newPasswordValidator, registerValidator } from '../validation/authValidation.js';
-import passport from 'passport';
 import { verifySessionId, verifyToken } from '../middlewares/authMiddleware.js';
 
 const authRouter = express.Router();
