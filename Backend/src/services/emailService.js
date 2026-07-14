@@ -1,4 +1,3 @@
-import nodemailer from 'nodemailer';
 import { Config } from '../config/config.js';
 import sgMail from '@sendgrid/mail'
 
