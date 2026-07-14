@@ -12,7 +12,12 @@ const sendEmail = async (to, subject, html) => {
             html,
         });
 
-        console.log('Message sent: %s', info);
+        if (error) {
+            console.error('Resend error:', JSON.stringify(error, null, 2));
+            return;
+        }
+
+        console.log('Message sent:', data);
     } catch (error) {
         console.error('Error sending email:', error);
     }
