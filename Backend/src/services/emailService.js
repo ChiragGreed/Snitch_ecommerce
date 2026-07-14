@@ -5,7 +5,7 @@ const resend = new Resend(Config.RESEND_EMAIL_KEY);
 
 const sendEmail = async (to, subject, html) => {
     try {
-        const info = await Resend.emails.send({
+        const info = await resend.emails.send({
             from: `"Snitch" <${Config.EMAIL_USER}>`,
             to,
             subject,
