@@ -15,13 +15,12 @@ const sendEmail = async (to, subject, html) => {
     };
 
     try {
-        const info = await sgMail.send(msg);
-        console.log('Message sent: %s', info.messageId);
+        const [response] = await sgMail.send(msg);
+        console.log('Message sent, status code:', response.statusCode);
     } catch (error) {
         console.error('Error sending email:', error);
-
         if (error.response) {
-            console.error(error.response.body)
+            console.error(error.response.body);
         }
     }
 }
