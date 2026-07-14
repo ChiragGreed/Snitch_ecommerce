@@ -1,4 +1,4 @@
-import { Resend } from 'Resend'
+import { Resend } from 'resend'
 import { Config } from '../config/config.js';
 
 const resend = new Resend(Config.RESEND_EMAIL_KEY);
