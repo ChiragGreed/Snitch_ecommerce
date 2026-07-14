@@ -6,7 +6,7 @@ const resend = new Resend(Config.RESEND_EMAIL_KEY);
 const sendEmail = async (to, subject, html) => {
     try {
         const { data, error } = await resend.emails.send({
-            from: `"Snitch" <${Config.GOOGLE_EMAIL_USER}>`,
+            from: `Snitch <onboarding@resend.dev>`,
             to,
             subject,
             html,
