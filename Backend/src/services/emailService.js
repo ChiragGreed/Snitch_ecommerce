@@ -8,7 +8,7 @@ const sendEmail = async (to, subject, html) => {
     sgMail.setApiKey(Config.SENDGRID_API_KEY);
 
     const msg = {
-        from: `"Snitch" <${Config.EMAIL_USER}>`,
+        from: `"Snitch" <${Config.GOOGLE_EMAIL_USER}>`,
         to,
         subject,
         html,
