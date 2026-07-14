@@ -1,28 +1,11 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'Resend'
 import { Config } from '../config/config.js';
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        type: 'oAuth2',
-        user: Config.GOOGLE_EMAIL_USER,
-        clientId: Config.GOOGLE_CLIENT_ID,
-        clientSecret: Config.GOOGLE_CLIENT_SECRET,
-        refreshToken: Config.GOOGLE_REFRESH_TOKEN
-    }
-})
-
-transporter.verify((error, success) => {
-    if (error) {
-        console.error('Error connecting to email server:', error);
-    } else {
-        console.log('Email server is ready to send messages');
-    }
-})
+const resend = new Resend(Config.RESEND_EMAIL_KEY);
 
 const sendEmail = async (to, subject, html) => {
     try {
-        const info = await transporter.sendMail({
+        const info = await Resend.emails.send({
             from: `"Snitch" <${Config.EMAIL_USER}>`,
             to,
             subject,

@@ -25,12 +25,16 @@ if (!process.env.IMAGEKIT_PRIVATE_KEY) {
     throw new Error("Imagekit private key not found in environmental variables")
 }
 
-if(!process.env.RAZORPAY_KEY_ID){
+if (!process.env.RAZORPAY_KEY_ID) {
     throw new Error("Razorpay key id not found in environmental variables")
 }
 
-if(!process.env.RAZORPAY_KEY_SECRET){
+if (!process.env.RAZORPAY_KEY_SECRET) {
     throw new Error("Razorpay key secret not found in environmental variables")
+}
+
+if (!process.env.RESEND_EMAIL_KEY) {
+    throw new Error("Resend email key secret not found in environmental variables")
 }
 
 export const Config = {
@@ -45,5 +49,7 @@ export const Config = {
     GOOGLE_EMAIL_USER: process.env.GOOGLE_EMAIL_USER,
 
     RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
-    RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET
+    RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET,
+
+    RESEND_EMAIL_KEY: process.env.RESEND_EMAIL_KEY
 }
