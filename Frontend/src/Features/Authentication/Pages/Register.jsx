@@ -19,7 +19,7 @@ const Register = () => {
     email: '',
     contact: '',
     password: '',
-    role: 'buyer',
+    role: 'isBuyer',
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
