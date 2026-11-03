@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { createProductApi, createVariantApi, deleteVariantApi, getProductApi, getProductsApi, getSellerProductsApi, updateProductApi } from "../Service/productApi"
+import { createProductApi, createVariantApi, deleteVariantApi, getCategoryProductsApi, getProductApi, getProductsApi, getSellerProductsApi, updateProductApi } from "../Service/productApi"
 import { setAllProducts, setProduct } from "../State/productSlice.js"
 import { setSellerProducts } from "../State/productSlice.js"
 import { setLoading } from "../../Authentication/State/authSlice.js";
@@ -55,6 +55,13 @@ const useProduct = () => {
         dispatch(setLoading(false));
     }
 
+    const getCategoryProductsHandler = async (categoryId) => {
+        dispatch(setLoading(true));
+        const categoryProductsData = await getCategoryProductsApi(categoryId);
+        dispatch(setAllProducts(categoryProductsData.products));
+        dispatch(setLoading(false));
+    }
+
     const ProductHandler = async ({ productId }) => {
         const ProductData = await getProductApi({ productId });
         dispatch(setProduct(ProductData.product));
@@ -85,7 +92,7 @@ const useProduct = () => {
         return true;
     }
 
-    return { createProductHandler, createVariantHandler, deleteVariantHandler, SellerProductsHandler, ProductsHandler, ProductHandler, updateProductHandler }
+    return { createProductHandler, createVariantHandler, deleteVariantHandler, SellerProductsHandler, ProductsHandler, getCategoryProductsHandler, ProductHandler, updateProductHandler }
 }
 
 export default useProduct;

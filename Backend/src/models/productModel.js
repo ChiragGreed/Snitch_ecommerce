@@ -27,6 +27,12 @@ const productSchema = new mongoose.Schema({
         required: true
     },
 
+    category: {
+        type: [String],
+        ref: "categories",
+        required: true
+    },
+
     variants: [
         {
             attribute: {

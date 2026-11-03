@@ -20,6 +20,11 @@ export const getProductsApi = async () => {
   return response.data;
 }
 
+export const getCategoryProductsApi = async (categoryId) => {
+  const response = await api.get(`/category/${categoryId}`);
+  return response.data;
+}
+
 export const getProductApi = async ({ productId }) => {
   const response = await api.get(`/${productId}`);
   return response.data;

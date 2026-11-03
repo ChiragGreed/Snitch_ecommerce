@@ -1,10 +1,11 @@
 import { variantStock } from "../dao/variantStock.dao.js";
 import cartModel from "../models/cartModel.js";
+import categoryModel from "../models/categoryModel.js";
 import productModel from "../models/productModel.js";
 import ImagetKitUpload from "../services/imagekit.js";
 
 export const createProduct = async (req, res) => {
-    const { title, description } = req.body;
+    const { title, description, category } = req.body;
     let price = req.body.price;
 
     if (typeof price == 'string') {
@@ -13,13 +14,58 @@ export const createProduct = async (req, res) => {
 
     const imagesUrl = await Promise.all(req.files.map((image) => { return ImagetKitUpload(image.buffer, image.originalname) }));
 
-    const product = await productModel.create({ title, description, images: imagesUrl, price, sellerId: req.user });
+    const product = await productModel.create({ title, description, category, images: imagesUrl, price, sellerId: req.user });
 
     res.status(201).json({
         message: "Product created",
         success: true,
         product
     })
+}
+
+export const ProductCategorization = async (req, res) => {
+    const { name, parent } = req.body;
+
+    if (!name) return res.status(400).json({
+        message: "Category name is required",
+        success: false,
+        error: "Category name is required"
+    })
+
+    const category = await categoryModel.create({ name, parent });
+
+    res.status(201).json({
+        message: "Category created",
+        success: true,
+        category
+    })
+
+}
+
+export const getCategoryProducts = async (req, res) => {
+    const { categoryId } = req.params;
+
+    if (!categoryId) return res.status(400).json({
+        message: "CategoryId is required",
+        success: false
+    })
+
+    console.log(categoryId);
+
+    const products = await productModel.find({ category: categoryId });
+
+    if (!products || products.length == 0) return res.status(200).json({
+        message: "No Products in this category",
+        success: true,
+        products
+    })
+
+    return res.status(200).json({
+        message: `Fetched all products from catrgoryId: ${categoryId}`,
+        success: true,
+        products
+    })
+
 }
 
 export const createVariant = async (req, res) => {
