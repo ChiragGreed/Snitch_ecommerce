@@ -42,6 +42,15 @@ export const ProductCategorization = async (req, res) => {
 
 }
 
+export const getCategories = async (req, res) => {
+    const categories = await categoryModel.find().sort({ name: 1 }).lean();
+
+    return res.status(200).json({
+        success: true,
+        categories,
+    });
+};
+
 export const getCategoryProducts = async (req, res) => {
     const { categoryId } = req.params;
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createProduct, createVariant, deleteVariant, getCategoryProducts, getProduct, getProducts, getSellerProducts, ProductCategorization, updateProduct } from '../controllers/productController.js';
+import { createProduct, createVariant, deleteVariant, getCategories, getCategoryProducts, getProduct, getProducts, getSellerProducts, ProductCategorization, updateProduct } from '../controllers/productController.js';
 import { authSeller, verifyToken } from '../middlewares/authMiddleware.js';
 import multer from 'multer';
 import { addToCartValidator } from '../validation/cartValidation.js';
@@ -28,6 +28,8 @@ ProductRouter.get('/seller', authSeller, getSellerProducts);
 ProductRouter.patch('/seller/:productId', authSeller, upload.array('images', 8), updateProduct);
 
 ProductRouter.get('/', getProducts);
+
+ProductRouter.get('/categories', getCategories);
 
 ProductRouter.get('/category/:categoryId', getCategoryProducts);
 
