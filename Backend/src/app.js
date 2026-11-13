@@ -12,6 +12,7 @@ import orderRouter from './routes/orderRouter.js';
 import publicRouter from './routes/publicRouter.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import notificationRouter from './routes/notificationRouter.js';
 
 
 const app = express();
@@ -47,6 +48,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/products', ProductRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/order', orderRouter);
+app.use('/api/notification', notificationRouter);
 
 app.use('/', publicRouter);
 
