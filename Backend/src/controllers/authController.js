@@ -5,19 +5,22 @@ import JWT from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import sendEmail from "../services/emailService.js";
 
-function tokenGeneration(user, res) {
-
+function tokenGeneration(user, res, isMobile = false) {
     const token = JWT.sign({
         userId: user._id,
         fullname: user.fullname,
         role: user.role
-    }, Config.JWT_SECRET,
-        { expiresIn: '7d' });
+    }, Config.JWT_SECRET, {
+        expiresIn: "7d"
+    });
 
+    // Browser authentication only
+    if (!isMobile) res.cookie("token", token);
 
-    res.cookie("token", token);
-
+    return token;
 }
+
+const isMobileClient = (req) => req.get("x-client-type") === "mobile";
 
 export const register = async (req, res) => {
     const { fullname, email, contact, password, role } = req.body;
@@ -32,12 +35,15 @@ export const register = async (req, res) => {
 
     const user = await userModel.create({ fullname, email, password, contact, role });
 
-    tokenGeneration(user, res);
+
+    const isMobile = isMobileClient(req);
+    const token = tokenGeneration(user, res);
 
     res.status(201).json({
         message: "User registered",
         success: true,
-        user
+        user,
+        ...(isMobile && { token })
     })
 
 }
@@ -61,13 +67,14 @@ export const login = async (req, res) => {
         error: "Invalid credentials"
     })
 
-
-    tokenGeneration(user, res);
+    const isMobile = isMobileClient(req);
+    const token = tokenGeneration(user, res);
 
     res.status(201).json({
         message: "User Logged in",
         success: true,
         user,
+        ...(isMobile && { token }),
     })
 
 }
