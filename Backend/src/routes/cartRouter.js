@@ -7,6 +7,8 @@ const cartRouter = express.Router();
 
 cartRouter.get('/items', verifyToken, cartItemValidator, getCartItems);
 
+cartRouter.post('/migrate', verifyToken, addItemToCart);
+
 cartRouter.post('/add/:productId/:variantId', verifyToken, addToCartValidator, addItemToCart);
 
 cartRouter.post('/addItemQuantity', verifyToken, cartItemValidator, addItemQuantity);
@@ -19,6 +21,5 @@ cartRouter.post('/order/payment', verifyToken, createPaymentOrder);
 
 cartRouter.post('/order/payment/verify', verifyToken, verifyPayment);
 
-cartRouter.post('/migrate', verifyToken, addItemToCart);
 
 export default cartRouter;
