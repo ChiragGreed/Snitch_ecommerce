@@ -19,4 +19,6 @@ cartRouter.post('/order/payment', verifyToken, createPaymentOrder);
 
 cartRouter.post('/order/payment/verify', verifyToken, verifyPayment);
 
+cartRouter.post('/migrate', verifyToken, addItemToCart);
+
 export default cartRouter;
