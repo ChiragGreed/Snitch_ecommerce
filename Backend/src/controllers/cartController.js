@@ -295,30 +295,36 @@ export const createPaymentOrder = async (req, res) => {
     const userId = req.user;
     const cart = await getCart(userId);
 
-    const { amount, currency = 'INR' } = req.body;
+    if (!cart || cart.length === 0 || !cart[0]?.items?.length) {
+        return res.status(400).json({
+            success: false,
+            message: "Your cart is empty"
+        });
+    }
 
-    if (!amount || !currency) return res.status(400).json({
-        message: "Amount or Currency not provided",
-        success: false,
-        error: "Amount or Currency missing"
-    })
+    const { amount, currency } = cart[0].totalPrice;
 
-    const options = {
-        amount: amount * 100,
-        currency: currency
-    };
+    if (!amount || amount <= 0 || !currency) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid cart amount"
+        });
+    }
 
-    const order = await razorpay.orders.create(options);
+    // Razorpay expects the amount in the smallest currency unit.
+    // For INR, ₹100 becomes 10000 paise.
+    const order = await razorpay.orders.create({ amount: Math.round(amount * 100), currency, receipt: `receipt_${Date.now()}` });
 
-    const payment = await paymentModel.create({ userId, cartId: cart[0]._id, order: { razorpay_order_id: order.id }, price: cart[0].totalPrice });
+    await paymentModel.create({ userId, cartId: cart[0]._id, order: { razorpay_order_id: order.id }, price: { amount, currency } });
 
-    res.status(200).json({
-        message: "Payment pending",
+    return res.status(200).json({
         success: true,
+        message: "Payment order created",
+        key: Config.RAZORPAY_KEY_ID,
         order
-    })
+    });
+};
 
-}
 
 export const verifyPayment = async (req, res) => {
     const userId = req.user;
