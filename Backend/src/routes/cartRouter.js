@@ -1,5 +1,5 @@
 import express from 'express';
-import { addItemToCart, getCartItems, addItemQuantity, subItemQuantity, removeItem, createPaymentOrder, verifyPayment } from '../controllers/cartController.js';
+import { addItemToCart, getCartItems, addItemQuantity, subItemQuantity, removeItem, createPaymentOrder, verifyPayment, migrateGuestCart } from '../controllers/cartController.js';
 import { verifyToken } from '../middlewares/authMiddleware.js';
 import { addToCartValidator, cartItemValidator } from '../validation/cartValidation.js';
 
@@ -7,7 +7,7 @@ const cartRouter = express.Router();
 
 cartRouter.get('/items', verifyToken, cartItemValidator, getCartItems);
 
-cartRouter.post('/migrate', verifyToken, addItemToCart);
+cartRouter.post('/migrate', verifyToken, migrateGuestCart);
 
 cartRouter.post('/add/:productId/:variantId', verifyToken, addToCartValidator, addItemToCart);
 
