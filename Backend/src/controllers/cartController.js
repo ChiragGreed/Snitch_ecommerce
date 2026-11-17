@@ -295,30 +295,36 @@ export const createPaymentOrder = async (req, res) => {
     const userId = req.user;
     const cart = await getCart(userId);
 
-    const { amount, currency = 'INR' } = req.body;
+    if (!cart || cart.length === 0 || !cart[0]?.items?.length) {
+        return res.status(400).json({
+            success: false,
+            message: "Your cart is empty"
+        });
+    }
 
-    if (!amount || !currency) return res.status(400).json({
-        message: "Amount or Currency not provided",
-        success: false,
-        error: "Amount or Currency missing"
-    })
+    const { amount, currency } = cart[0].totalPrice;
 
-    const options = {
-        amount: amount * 100,
-        currency: currency
-    };
+    if (!amount || amount <= 0 || !currency) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid cart amount"
+        });
+    }
 
-    const order = await razorpay.orders.create(options);
+    // Razorpay expects the amount in the smallest currency unit.
+    // For INR, ₹100 becomes 10000 paise.
+    const order = await razorpay.orders.create({ amount: Math.round(amount * 100), currency, receipt: `receipt_${Date.now()}` });
 
-    const payment = await paymentModel.create({ userId, cartId: cart[0]._id, order: { razorpay_order_id: order.id }, price: cart[0].totalPrice });
+    await paymentModel.create({ userId, cartId: cart[0]._id, order: { razorpay_order_id: order.id }, price: { amount, currency } });
 
-    res.status(200).json({
-        message: "Payment pending",
+    return res.status(200).json({
         success: true,
+        message: "Payment order created",
+        key: Config.RAZORPAY_KEY_ID,
         order
-    })
+    });
+};
 
-}
 
 export const verifyPayment = async (req, res) => {
     const userId = req.user;
@@ -375,3 +381,147 @@ export const verifyPayment = async (req, res) => {
 }
 
 
+export const migrateGuestCart = async (req, res) => {
+    try {
+        const userId = req.user;
+        const { items } = req.body;
+
+        if (!Array.isArray(items)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid cart items"
+            });
+        }
+
+        // 1. Validate and normalize guest items
+        const guestItems = [];
+
+        for (const item of items) {
+            const { productId, variantId, quantity } = item;
+
+            if (
+                !mongoose.Types.ObjectId.isValid(productId) ||
+                !mongoose.Types.ObjectId.isValid(variantId) ||
+                !Number.isInteger(quantity) ||
+                quantity < 1
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid cart item"
+                });
+            }
+
+            const product = await productModel.findOne({
+                _id: productId,
+                "variants._id": variantId
+            });
+
+            if (!product) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Product or variant not found"
+                });
+            }
+
+            const stock = await variantStock(productId, variantId);
+
+            const existingItem = guestItems.find(
+                i =>
+                    i.productId.toString() === productId.toString() &&
+                    i.variantId.toString() === variantId.toString()
+            );
+
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                guestItems.push({
+                    productId,
+                    variantId,
+                    quantity
+                });
+            }
+
+            const normalizedItem = guestItems.find(
+                i =>
+                    i.productId.toString() === productId.toString() &&
+                    i.variantId.toString() === variantId.toString()
+            );
+
+            if (normalizedItem.quantity > stock) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Insufficient stock",
+                    productId,
+                    variantId
+                });
+            }
+        }
+
+        // 2. If guest cart is empty, nothing to migrate
+        if (guestItems.length === 0) {
+            return res.status(200).json({
+                success: true,
+                message: "No guest items to migrate"
+            });
+        }
+
+        // 3. Find existing user's cart
+        let cart = await cartModel.findOne({ userId });
+
+        if (!cart) {
+            // Create a new cart
+            cart = await cartModel.create({
+                userId,
+                items: guestItems
+            });
+        } else {
+            // Merge guest items into existing cart
+            for (const guestItem of guestItems) {
+                const existingItem = cart.items.find(
+                    item =>
+                        item.productId.toString() === guestItem.productId.toString() &&
+                        item.variantId.toString() === guestItem.variantId.toString()
+                );
+
+                if (existingItem) {
+                    const newQuantity =
+                        existingItem.quantity + guestItem.quantity;
+
+                    const stock = await variantStock(
+                        guestItem.productId,
+                        guestItem.variantId
+                    );
+
+                    if (newQuantity > stock) {
+                        return res.status(400).json({
+                            success: false,
+                            message: "Insufficient stock while merging cart",
+                            productId: guestItem.productId,
+                            variantId: guestItem.variantId
+                        });
+                    }
+
+                    existingItem.quantity = newQuantity;
+                } else {
+                    cart.items.push(guestItem);
+                }
+            }
+
+            await cart.save();
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Guest cart migrated successfully",
+            cart
+        });
+
+    } catch (error) {
+        console.error("Cart migration error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to migrate cart"
+        });
+    }
+};

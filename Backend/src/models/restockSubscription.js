@@ -4,13 +4,11 @@ const restockSubscriptionSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",
-    },
-    guestId: {
-        type: String,
+        required: true
     },
     product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
+        ref: "products",
         required: true,
     },
     variant: {
@@ -22,8 +20,14 @@ const restockSubscriptionSchema = new mongoose.Schema({
         enum: ["active", "notified", "cancelled"],
         default: "active",
     },
-})
+    notifiedAt: { type: Date, default: null }
+}, { timestamps: true });
+
+restockSubscriptionSchema.index(
+    { userId: 1, product: 1, variant: 1 },
+    { unique: true, partialFilterExpression: { status: "active" } }
+);
 
 const restockSubscriptionModel = mongoose.model('restockSubscription', restockSubscriptionSchema);
 
-export default restockSubscriptionModel
+export default restockSubscriptionModel;

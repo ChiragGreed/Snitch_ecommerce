@@ -3,6 +3,7 @@ import cartModel from "../models/cartModel.js";
 import categoryModel from "../models/categoryModel.js";
 import productModel from "../models/productModel.js";
 import ImagetKitUpload from "../services/imagekit.js";
+import { notifyRestockSubscribers } from "../services/restockNotification.service.js";
 
 export const createProduct = async (req, res) => {
     const { title, description, category } = req.body;
@@ -211,79 +212,143 @@ export const getProduct = async (req, res) => {
     })
 }
 
+
 export const updateProduct = async (req, res) => {
-    const { productId } = req.params;
-
-    if (!productId) return res.status(400).json({
-        message: "Product Id is missing",
-        success: false,
-        error: "Product Id not found in params"
-    })
-
-    let { title, description, price, variants, existingImages } = req.body;
-
-    if (typeof price == 'string') {
-        price = JSON.parse(price);
-    }
-
-    if (typeof variants == 'string') {
-        variants = JSON.parse(variants);
-    }
-
-    if (existingImages) {
-        existingImages = JSON.parse(existingImages);
-    }
-
-    const imagesUrl = req.files?.length ? await Promise.all(req.files.map((image) => { return ImagetKitUpload(image.buffer, image.originalname) })) : [];
-
-    const product = await productModel.findOne({ _id: productId, sellerId: req.user });
-
-    if (!product) return res.status(404).json({
-        message: "Product not found",
-        success: false,
-        error: "No product found by the this product Id"
-    })
-
-
-    const updateFields = {};
-
-    if (title !== undefined) {
-        updateFields.title = title;
-    }
-
-    if (description !== undefined) {
-        updateFields.description = description;
-    }
-
-    if (price !== undefined) {
-        updateFields.price = price;
-    }
-
-    if (variants !== undefined) {
-        updateFields.variants = variants;
-    }
-
-    updateFields.images = [...existingImages, ...imagesUrl];
-
-
-    let updatedProduct;
-
     try {
-        updatedProduct = await productModel.findByIdAndUpdate(productId, updateFields);
-    }
-    catch (err) {
-        console.log(err);
-        return res.status(400).json({
-            message: "Product updation failed",
+        const { productId } = req.params;
+
+        let { title, description, price, variants, existingImages } = req.body;
+
+
+        // Validate product ID
+        if (!productId) {
+            return res.status(400).json({
+                success: false,
+                message: "Product ID is required"
+            });
+        }
+
+
+        // Parse multipart form data
+        if (typeof price === "string") {
+            price = JSON.parse(price);
+        }
+
+        if (typeof variants === "string") {
+            variants = JSON.parse(variants);
+        }
+
+        if (typeof existingImages === "string") {
+            existingImages = JSON.parse(existingImages);
+        }
+
+
+        // Find product belonging to the logged-in seller
+        const product = await productModel.findOne({
+            _id: productId,
+            sellerId: req.user
+        });
+
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: "Product not found"
+            });
+        }
+
+
+        // Upload newly added images
+        const imagesUrl = req.files?.length
+            ? await Promise.all(
+                req.files.map(image =>
+                    ImagetKitUpload(image.buffer, image.originalname)
+                )
+            )
+            : [];
+
+
+        // Prepare product update fields
+        const updateFields = {};
+
+        if (title !== undefined) {
+            updateFields.title = title;
+        }
+
+        if (description !== undefined) {
+            updateFields.description = description;
+        }
+
+        if (price !== undefined) {
+            updateFields.price = price;
+        }
+
+        if (variants !== undefined) {
+            updateFields.variants = variants;
+        }
+
+        updateFields.images = [
+            ...(existingImages ?? product.images),
+            ...imagesUrl
+        ];
+
+
+        // Update product in database
+        const updatedProduct = await productModel.findByIdAndUpdate(
+            productId,
+            updateFields,
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+
+        // Check whether any variant has come back in stock
+        if (variants !== undefined) {
+
+            for (const oldVariant of product.variants) {
+
+                const newVariant = updatedProduct.variants.id(
+                    oldVariant._id
+                );
+
+
+                // Previously out of stock, now available
+                if (
+                    newVariant &&
+                    oldVariant.stock <= 0 &&
+                    newVariant.stock > 0
+                ) {
+                    try {
+                        await notifyRestockSubscribers(
+                            updatedProduct,
+                            newVariant
+                        );
+
+                    } catch (notificationError) {
+                        console.error(
+                            "Restock notification failed:",
+                            notificationError
+                        );
+                    }
+                }
+            }
+        }
+
+
+        return res.status(200).json({
+            success: true,
+            message: "Product Updated",
+            updatedProduct
+        });
+
+    } catch (error) {
+        console.error("Product update error:", error);
+
+        return res.status(500).json({
             success: false,
-            err: err
-        })
+            message: "Product updation failed",
+            error: error.message
+        });
     }
-
-    res.status(200).json({
-        message: "Product Updated",
-        success: true,
-        updatedProduct
-    })
-
-}
+};

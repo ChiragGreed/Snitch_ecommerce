@@ -25,27 +25,41 @@ export const authSeller = async (req, res, next) => {
     next();
 }
 
+
 export const verifyToken = async (req, res, next) => {
-    const { token } = req.cookies;
+    try {
+        const authHeader = req.headers.authorization;
 
-    if (!token) return res.status(401).json({
-        message: "Token not provided",
-        success: false,
-        error: "No token provided"
-    })
+        const bearerToken = authHeader?.startsWith("Bearer ")
+            ? authHeader.split(" ")[1]
+            : null;
 
-    const decodedToken = JWT.verify(token, Config.JWT_SECRET);
+        const token = bearerToken || req.cookies?.token;
 
-    if (!decodedToken) return res.status(401).json({
-        message: "User not authorised",
-        success: false,
-        error: "Invalid token"
-    })
+        if (!token) {
+            return res.status(401).json({
+                message: "Token not provided",
+                success: false
+            });
+        }
 
-    req.user = decodedToken.userId;
+        const decodedToken = JWT.verify(
+            token,
+            Config.JWT_SECRET
+        );
 
-    next();
-}
+        req.user = decodedToken.userId;
+
+        next();
+
+    } catch (error) {
+        return res.status(401).json({
+            message: "Invalid or expired token",
+            success: false
+        });
+    }
+};
+    
 
 export const verifySessionId = async (req, res, next) => {
     const { sessionId } = req.cookies;
