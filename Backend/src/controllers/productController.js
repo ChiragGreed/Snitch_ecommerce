@@ -3,7 +3,7 @@ import cartModel from "../models/cartModel.js";
 import categoryModel from "../models/categoryModel.js";
 import productModel from "../models/productModel.js";
 import ImagetKitUpload from "../services/imagekit.js";
-import { notifyRestockSubscribers } from "../services/restockNotification.service.js";
+import { notifyRestockSubscribers } from "../services/restockNotificationService.js";
 
 export const createProduct = async (req, res) => {
     const { title, description, category } = req.body;
