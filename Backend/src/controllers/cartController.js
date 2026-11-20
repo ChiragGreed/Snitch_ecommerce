@@ -290,6 +290,27 @@ export const removeItem = async (req, res) => {
     })
 }
 
+export const clearCart = async (req, res) => {
+    const userId = req.user;
+
+    let cart = await cartModel.findOne({ userId });
+
+    if (!cart) return res.status(404).json({
+        message: "Cart do not exist",
+        success: false,
+        error: "Cart not found for given userId",
+        userId
+    })
+
+    await cart.deleteOne();
+
+    res.status(200).json({
+        message: "Item removed from cart",
+        success: true
+    })
+}
+
+
 export const createPaymentOrder = async (req, res) => {
 
     const userId = req.user;

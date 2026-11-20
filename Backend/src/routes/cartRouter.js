@@ -1,5 +1,5 @@
 import express from 'express';
-import { addItemToCart, getCartItems, addItemQuantity, subItemQuantity, removeItem, createPaymentOrder, verifyPayment, migrateGuestCart } from '../controllers/cartController.js';
+import { addItemToCart, getCartItems, addItemQuantity, subItemQuantity, removeItem, createPaymentOrder, verifyPayment, migrateGuestCart, clearCart } from '../controllers/cartController.js';
 import { verifyToken } from '../middlewares/authMiddleware.js';
 import { addToCartValidator, cartItemValidator } from '../validation/cartValidation.js';
 
@@ -16,6 +16,8 @@ cartRouter.post('/addItemQuantity', verifyToken, cartItemValidator, addItemQuant
 cartRouter.post('/subItemQuantity', verifyToken, cartItemValidator, subItemQuantity);
 
 cartRouter.post('/removeItem', verifyToken, cartItemValidator, removeItem);
+
+cartRouter.delete('/clear', verifyToken, clearCart);
 
 cartRouter.post('/order/payment', verifyToken, createPaymentOrder);
 
